@@ -155,7 +155,8 @@ public class ItemStorageInMemory implements ItemStorage {
     public List<ItemDto> search(Long userId, String text) {
 
         List<ItemDto> itemDtos = new ArrayList<>();
-        if (text != null) {
+
+        if (!text.isEmpty()) {
             List<Item> itemList = items.values()
                     .stream()
                     .filter(Item::getAvailable)
