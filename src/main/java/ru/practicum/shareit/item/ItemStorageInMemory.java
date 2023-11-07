@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ItemStorageInMemory implements ItemStorage{
+public class ItemStorageInMemory implements ItemStorage {
 
     private final UserStorageInMemory userStorageInMemory;
 

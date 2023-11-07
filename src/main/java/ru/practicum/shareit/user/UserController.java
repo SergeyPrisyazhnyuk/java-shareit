@@ -23,37 +23,36 @@ public class UserController {
     public UserDto save(@Valid @RequestBody UserDto userDto) {
         log.info("Invoke save method with user = {}", userDto);
         return userService.save(userDto);
-    };
+    }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
         log.info("Invoke update method with user = {}", userDto);
         return userService.update(id, userDto);
-    };
+    }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable("id") Long id) {
         log.info("Invoke get method with user id = {}", id);
         return userService.getUserById(id);
-    };
+    }
 
     @GetMapping
     public List<UserDto> getAll() {
         log.info("Invoke getAll method");
         return userService.getAll();
-    };
+    }
 
     @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable("id") Long id) {
         log.info("Invoke delete method with user id = {}", id);
         userService.deleteUserById(id);
-    };
+    }
 
     @DeleteMapping
     public void deleteAll() {
         log.info("Invoke delete method");
         userService.deleteAll();
-    };
-
+    }
 
 }

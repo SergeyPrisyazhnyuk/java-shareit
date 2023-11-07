@@ -10,9 +10,10 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;
+
     @Override
     public ItemDto save(Long userId, ItemDto itemDto) {
         return itemStorage.save(userId, itemDto);
