@@ -134,7 +134,7 @@ public class ItemStorageInMemory implements ItemStorage {
 
         List<Item> itemList = items.values()
                                         .stream()
-                                        .filter(u -> u.getId().equals(userId))
+                                        .filter(u -> u.getOwner().equals(userId))
                                         .collect(Collectors.toList());
 
         List<ItemDto> itemDtos = itemList
