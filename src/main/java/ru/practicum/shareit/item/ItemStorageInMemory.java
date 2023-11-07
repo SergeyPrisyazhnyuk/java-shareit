@@ -9,10 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserStorageInMemory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -157,19 +154,22 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public List<ItemDto> search(Long userId, String text) {
 
-        List<Item> itemList = items.values()
-                .stream()
-                .filter(Item::getAvailable)
-                .filter(i -> i.getName().toLowerCase().contains(text.toLowerCase())
+        List<ItemDto> itemDtos = new ArrayList<>();
+        
+        if (text != null) {
+            List<Item> itemList = items.values()
+                    .stream()
+                    .filter(Item::getAvailable)
+                    .filter(i -> i.getName().toLowerCase().contains(text.toLowerCase())
                             || i.getDescription().toLowerCase().contains(text.toLowerCase())
-                        )
-                .collect(Collectors.toList());
+                    )
+                    .collect(Collectors.toList());
 
-        List<ItemDto> itemDtos = itemList
-                .stream()
-                .map(ItemMapper::toItemDtoWithId)
-                .collect(Collectors.toList());
-
+           itemDtos = itemList
+                    .stream()
+                    .map(ItemMapper::toItemDtoWithId)
+                    .collect(Collectors.toList());
+        }
         return itemDtos;
     }
 }
