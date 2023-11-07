@@ -108,17 +108,8 @@ public class ItemStorageInMemory implements ItemStorage {
             throw new NotFoundException("Не найден айтем с id: " + itemId);
         }
 
-        System.out.println(items.get(itemId).getOwner());
-
-        if (!Objects.equals(userId, items.get(itemId).getOwner())) {
-            throw new WrongUserException("Пользователь с id " + userId + " не является владельцем данной вещи и не может ее редактировать");
-        }
-
         Item item = items.get(itemId);
-
-        System.out.println(item);
         ItemDto itemDto = ItemMapper.toItemDtoWithId(item);
-        System.out.println(itemDto);
 
         return itemDto;
     }
@@ -166,13 +157,8 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public List<ItemDto> search(Long userId, String text) {
 
-        if (userStorageInMemory.getUserById(userId) == null) {
-            throw new NotFoundException("Не найден юзер с id: " + userId);
-        }
-
         List<Item> itemList = items.values()
                 .stream()
-                .filter(u -> u.getId().equals(userId))
                 .filter(Item::getAvailable)
                 .filter(i -> i.getName().toLowerCase().contains(text.toLowerCase())
                             || i.getDescription().toLowerCase().contains(text.toLowerCase())
