@@ -29,7 +29,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto save(Long userId, ItemDto itemDto) {
 
-        if (userStorageInMemory.getUserById(userId) == null) {
+        if (!userStorageInMemory.getUsers().containsKey(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -48,15 +48,12 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
 
-        if (userStorageInMemory.getUserById(userId) == null) {
+        if (!userStorageInMemory.getUsers().containsKey(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
-        if (items.get(itemId) == null) {
-            throw new NotFoundException("Не найден айтем с id: " + itemId);
-        }
+        Item item = Optional.ofNullable(items.get(itemId)).orElseThrow(() -> new NotFoundException("Не найден айтем с id: " + itemId));
 
-        Item item = items.get(itemId);
         ItemDto newItemDto = ItemMapper.toItemDtoWithId(item);
 
         System.out.println(newItemDto);
@@ -97,15 +94,12 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto getItemById(Long userId, Long itemId) {
 
-        if (userStorageInMemory.getUserById(userId) == null) {
+        if (!userStorageInMemory.getUsers().containsKey(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
-        if (items.get(itemId) == null) {
-            throw new NotFoundException("Не найден айтем с id: " + itemId);
-        }
+        Item item = Optional.ofNullable(items.get(itemId)).orElseThrow(() -> new NotFoundException("Не найден айтем с id: " + itemId));
 
-        Item item = items.get(itemId);
         ItemDto itemDto = ItemMapper.toItemDtoWithId(item);
 
         return itemDto;
@@ -114,7 +108,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public List<ItemDto> getAll(Long userId) {
 
-        if (userStorageInMemory.getUserById(userId) == null) {
+        if (!userStorageInMemory.getUsers().containsKey(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -135,7 +129,8 @@ public class ItemStorageInMemory implements ItemStorage {
 
     @Override
     public void deleteItemById(Long userId, Long itemId) {
-        if (userStorageInMemory.getUserById(userId) == null) {
+
+        if (!userStorageInMemory.getUsers().containsKey(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 

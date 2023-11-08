@@ -8,6 +8,7 @@ import ru.practicum.shareit.exception.NotUniqueEmailException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,11 +37,8 @@ public class UserStorageInMemory implements UserStorage {
     @Override
     public UserDto update(Long id, UserDto userDto) {
 
-        if (users.get(id) == null) {
-            throw new NotFoundException("Не найден юзер с id: " + id);
-        }
+        User user = Optional.ofNullable(users.get(id)).orElseThrow(() -> new NotFoundException("Не найден юзер с id: " + id));
 
-        User user = users.get(id);
         User userToCheck = new User();
         userToCheck.setId(id);
 
@@ -73,14 +71,10 @@ public class UserStorageInMemory implements UserStorage {
 
     @Override
     public UserDto getUserById(Long id) {
-        if (users.get(id) != null) {
-            User user = users.get(id);
+            User user = Optional.ofNullable(users.get(id)).orElseThrow(() -> new NotFoundException("Не найден юзер с id: " + id));
             UserDto userDto = UserMapper.toUserDtoWithId(user);
             userDto.setId(id);
             return userDto;
-        } else {
-            throw new NotFoundException("Не найден юзер с id: " + id);
-        }
     }
 
     @Override
@@ -116,4 +110,9 @@ public class UserStorageInMemory implements UserStorage {
             throw new NotUniqueEmailException("User with email " + user.getEmail() + " already exists.");
         }
     }
+
+    public Map<Long, User> getUsers() {
+        return users;
+    }
+
 }
