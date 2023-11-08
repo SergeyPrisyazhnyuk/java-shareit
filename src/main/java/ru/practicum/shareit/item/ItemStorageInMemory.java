@@ -29,7 +29,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto save(Long userId, ItemDto itemDto) {
 
-        if (!userStorageInMemory.getUsers().containsKey(userId)) {
+        if (!userStorageInMemory.userExists(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -48,7 +48,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
 
-        if (!userStorageInMemory.getUsers().containsKey(userId)) {
+        if (!userStorageInMemory.userExists(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -94,7 +94,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public ItemDto getItemById(Long userId, Long itemId) {
 
-        if (!userStorageInMemory.getUsers().containsKey(userId)) {
+        if (!userStorageInMemory.userExists(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -108,7 +108,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public List<ItemDto> getAll(Long userId) {
 
-        if (!userStorageInMemory.getUsers().containsKey(userId)) {
+        if (!userStorageInMemory.userExists(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
@@ -130,7 +130,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public void deleteItemById(Long userId, Long itemId) {
 
-        if (!userStorageInMemory.getUsers().containsKey(userId)) {
+        if (!userStorageInMemory.userExists(userId)) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 

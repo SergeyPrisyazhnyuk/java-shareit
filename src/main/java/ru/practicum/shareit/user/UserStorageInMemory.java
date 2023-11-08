@@ -111,11 +111,8 @@ public class UserStorageInMemory implements UserStorage {
         }
     }
 
-    public Map<Long, User> getUsers() {
-
-        Map<Long, User> userMap = users;
-
-        return userMap;
+    public boolean userExists(Long userId) {
+        return users.containsKey(userId);
     }
 
 }
