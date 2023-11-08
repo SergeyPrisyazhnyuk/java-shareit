@@ -112,7 +112,10 @@ public class UserStorageInMemory implements UserStorage {
     }
 
     public Map<Long, User> getUsers() {
-        return users;
+
+        Map<Long, User> userMap = users;
+
+        return userMap;
     }
 
 }
