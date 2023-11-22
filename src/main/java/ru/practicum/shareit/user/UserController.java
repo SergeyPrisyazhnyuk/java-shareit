@@ -49,10 +49,4 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
-    @DeleteMapping
-    public void deleteAll() {
-        log.info("Invoke delete method");
-        userService.deleteAll();
-    }
-
 }
