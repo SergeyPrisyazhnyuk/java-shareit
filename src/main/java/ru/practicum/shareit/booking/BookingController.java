@@ -56,7 +56,9 @@ public class BookingController {
     public List<BookingDtoReturn> getAllByOwner(@RequestHeader(User_ID) Long ownerId,
                                          @RequestParam(name = "state", defaultValue = "ALL") String state) {
         log.info("Invoke getAllByOwner method with userId = {} and state = {} ", ownerId, state);
+
         return bookingService.getAllByOwner(ownerId, state);
+
     }
 
 }

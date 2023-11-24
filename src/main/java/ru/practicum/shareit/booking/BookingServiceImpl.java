@@ -101,7 +101,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Не найден юзер с id: " + bookerId);
         }
 
-        bookingStateValidation(state);
+            bookingStateValidation(state);
 
         switch (state) {
             case "ALL" :
