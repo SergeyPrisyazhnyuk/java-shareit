@@ -14,6 +14,6 @@ public enum BookingState {
         return Arrays.stream(BookingState.values())
                 .filter(s -> s.name().equals(bookingState))
                 .findFirst()
-                .orElse(BookingState.ALL);
+                .orElse(null);
     }
 }

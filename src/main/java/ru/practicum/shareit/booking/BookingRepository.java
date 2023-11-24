@@ -1,7 +1,81 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findAllBookingsByBookerId(Long bookerId);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " and ?2 between b.start_date and b.end_date " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findCurrentBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " and b.end_date < ?2 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findPastBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " and b.start_date > ?2 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findFutureBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " and b.status = 'WAITING'" +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findWaitingBookingsByBookerId(Long bookerId);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where b.booker_id = ?1 " +
+            " and b.status = 'REJECTED' " +
+            " order by b.start_date desc", nativeQuery = true)
+    List<Booking> findRejectedBookingsByBookerId(Long bookerId);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findAllBookingsByOwnerId(Long ownerId);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " and ?2 between b.start_date and b.end_date " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findCurrentBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " and b.end_date < ?2 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findPastBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " and b.start_date > ?2 " +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findFutureBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " and b.status = 'WAITING'" +
+            " order by b.start_date desc ", nativeQuery = true)
+    List<Booking> findWaitingBookingsByOwnerId(Long ownerId);
+
+    @Query(value = "select b.* from bookings b join items i on b.item_id = i.id " +
+            " where i.owner_id = ?1 " +
+            " and b.status = 'REJECTED' " +
+            " order by b.start_date desc", nativeQuery = true)
+    List<Booking> findRejectedBookingsByOwnerId(Long ownerId);
 
 }
