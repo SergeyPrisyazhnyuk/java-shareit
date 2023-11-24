@@ -9,12 +9,12 @@ public interface BookingService {
 
     BookingDtoReturn save(Long userId, BookingDto bookingDto);
 
-    BookingDto updateBookingStatus(Long userId, Long bookingId, Boolean status);
+    BookingDtoReturn updateBookingStatus(Long userId, Long bookingId, Boolean status);
 
-    BookingDto getBookingByUserId(Long userId, Long bookingId);
+    BookingDtoReturn getBookingByUserId(Long userId, Long bookingId);
 
-    List<BookingDto> getAll(Long userId, String state);
+    List<BookingDtoReturn> getAll(Long userId, String state);
 
-    List<BookingDto> getAllByOwner(Long userId, String state);
+    List<BookingDtoReturn> getAllByOwner(Long userId, String state);
 
 }

@@ -37,9 +37,11 @@ public class BookingServiceImpl implements BookingService {
         User user = userO.get();
 
 
+/*
         System.out.println("***************************************************************");
         System.out.println("user.getId() "+ user.getId());
         System.out.println("***************************************************************");
+*/
 
         Optional<Item> itemO = itemRepository.findById(bookingDto.getItemId());
 
@@ -61,32 +63,48 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(booking);
 
+/*
         System.out.println("***************************************************************");
         System.out.println("booking.getId(); " + booking.getId());
         System.out.println("***************************************************************");
-
-
+*/
 
         return BookingMapper.bookingDtoReturn(booking);
     }
 
     @Override
-    public BookingDto updateBookingStatus(Long userId, Long bookingId, Boolean status) {
+    @Transactional
+    public BookingDtoReturn updateBookingStatus(Long userId, Long bookingId, Boolean status) {
+
+
+
         return null;
     }
 
     @Override
-    public BookingDto getBookingByUserId(Long userId, Long bookingId) {
+    @Transactional
+    public BookingDtoReturn getBookingByUserId(Long userId, Long bookingId) {
+
+        Optional<Booking> bookingO = bookingRepository.findById(userId);
+
+        if (bookingO.isEmpty()) {
+            throw new NotFoundException("Не найден букинг с id: " + bookingId);
+        }
+
+        Booking booking = bookingO.get();
+
         return null;
     }
 
     @Override
-    public List<BookingDto> getAll(Long userId, String state) {
+    @Transactional
+    public List<BookingDtoReturn> getAll(Long userId, String state) {
         return null;
     }
 
     @Override
-    public List<BookingDto> getAllByOwner(Long userId, String state) {
+    @Transactional
+    public List<BookingDtoReturn> getAllByOwner(Long userId, String state) {
         return null;
     }
 
