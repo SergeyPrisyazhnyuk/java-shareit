@@ -11,7 +11,7 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getBookingStatus(),
+                booking.getStatus(),
                 ItemMapper.toItemBookingDto(booking.getItem()),
                 UserMapper.toUserDtoWithId(booking.getBooker())
         );

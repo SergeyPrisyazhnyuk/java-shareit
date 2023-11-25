@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 import ru.practicum.shareit.exception.BookingValidationException;
-import ru.practicum.shareit.exception.CommonValidationException;
+import ru.practicum.shareit.exception.CommonValidationException400;
+import ru.practicum.shareit.exception.CommonValidationException404;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.WrongStateException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -32,13 +33,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDtoReturn save(Long userId, BookingDto bookingDto) {
 
-        Optional<User> userO =  userRepository.findById(userId);
-
-        if (userO.isEmpty()) {
-            throw new NotFoundException("Не найден юзер с id: " + userId);
-        }
-
-        User user = userO.get();
+        User user = userValidation(userId);
 
         Optional<Item> itemO = itemRepository.findById(bookingDto.getItemId());
 
@@ -69,9 +64,11 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = getBookingByBookingId(bookingId);
 
+        userValidation(userId);
+
         bookingValidationUpdate(booking, userId);
 
-        booking.setBookingStatus(status ? BookingStatus.APPROVED : BookingStatus.REJECTED );
+        booking.setStatus(status ? BookingStatus.APPROVED : BookingStatus.REJECTED );
 
         bookingRepository.save(booking);
 
@@ -82,12 +79,14 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDtoReturn getBookingByUserId(Long userId, Long bookingId) {
 
+        userValidation(userId);
+
         Booking booking = getBookingByBookingId(bookingId);
 
         if (!booking.getBooker().getId().equals(userId)
                 && !booking.getItem().getOwner().equals(userId)
             ) {
-            throw new CommonValidationException("Current user is neither the item owner nor the booker");
+            throw new CommonValidationException404("Current user is neither the item owner nor the booker");
         }
 
         return BookingMapper.bookingDtoReturn(booking);
@@ -134,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            default: throw new WrongStateException("Unknown state: UNSUPPORTED_STATUS");
+            default: throw new WrongStateException("Unknown state: " + state);
 
             }
     }
@@ -179,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            default: throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
+            default: throw new WrongStateException("Unknown state: " + state);
         }
     }
 
@@ -194,16 +193,24 @@ public class BookingServiceImpl implements BookingService {
         return bookingO.get();
     }
 
+    private User userValidation(Long userId) {
+        Optional<User> userO =  userRepository.findById(userId);
 
+        if (userO == null || userO.isEmpty()) {
+            throw new NotFoundException("Не найден юзер с id: " + userId);
+        }
+
+        return userO.get();
+    }
 
     private void bookingValidationUpdate(Booking booking, Long userId) {
 
         if (!booking.getItem().getOwner().equals(userId)) {
-            throw new CommonValidationException("Current user is not owner");
+            throw new CommonValidationException404("Current user is not owner");
         }
 
-        if (!booking.getBookingStatus().equals(BookingStatus.WAITING)) {
-            throw new CommonValidationException("Current status is not WAITING");
+        if (!booking.getStatus().equals(BookingStatus.WAITING)) {
+            throw new CommonValidationException400("Current status is not WAITING");
         }
     }
 

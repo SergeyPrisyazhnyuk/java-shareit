@@ -2,9 +2,12 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.item.model.Item;
 
+import java.awt.print.Book;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -77,5 +80,24 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " and b.status = 'REJECTED' " +
             " order by b.start_date desc", nativeQuery = true)
     List<Booking> findRejectedBookingsByOwnerId(Long ownerId);
+
+
+    @Query(value = "select * from bookings b join items i on i.id = b.item_id " +
+            " where b.item_id = ?1 and b.start_date < ?2 " +
+            " and b.status = 'APPROVED' " +
+            " order by b.start_date desc limit 1 ", nativeQuery = true)
+    Optional<Booking> findLastBooking(Long itemId, LocalDateTime localDateTime);
+
+    @Query(value = "select * from bookings b join items i on i.id = b.item_id " +
+            " where b.item_id = ?1 and b.start_date > ?2 " +
+            " and b.status = 'APPROVED' " +
+            " order by b.start_date asc limit 1 ", nativeQuery = true)
+    Optional<Booking> findNextBooking(Long itemId, LocalDateTime localDateTime);
+
+
+
+    List<Booking> findAllByItemAndStatusOrderByStartAsc(Item items, BookingStatus bookingStatus);
+
+    List<Booking> findAllByItemInAndStatusOrderByStartAsc(List<Item> items, BookingStatus bookingStatus);
 
 }

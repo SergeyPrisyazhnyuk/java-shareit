@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,5 +30,23 @@ public class ItemDto {
 
     private Long request;
 
+    private BookingDtoReturn lastBooking;
 
+    private BookingDtoReturn nextBooking;
+
+    public ItemDto(Long id, String name, String description, Boolean available, Long owner, Long request) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+        this.request = request;
+    }
+
+    public ItemDto(Long id, String name, String description, Boolean available) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
 }

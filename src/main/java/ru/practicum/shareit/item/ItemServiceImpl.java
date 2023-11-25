@@ -3,12 +3,19 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.dto.BookingDtoReturn;
+import ru.practicum.shareit.exception.CommonValidationException404;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +26,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     @Transactional
@@ -102,8 +110,21 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Item item = itemOpt.get();
+        ItemDto itemDto = ItemMapper.toItemDtoWithId(item);
 
-        return ItemMapper.toItemDtoWithId(item);
+        if (item.getOwner().equals(userId)) {
+            return itemDto;
+        }
+
+        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item , BookingStatus.APPROVED);
+        List<BookingDtoReturn> bookingDtoReturnList = bookings.stream()
+                .map(BookingMapper::bookingDtoReturn)
+                .collect(Collectors.toList());
+
+        itemDto.setLastBooking(findItemLastBooking(bookingDtoReturnList,LocalDateTime.now()));
+        itemDto.setNextBooking(findItemNextBooking(bookingDtoReturnList,LocalDateTime.now()));
+
+        return itemDto;
     }
 
     @Override
@@ -174,4 +195,30 @@ public class ItemServiceImpl implements ItemService {
 
         return itemDtos;
     }
+
+    private BookingDtoReturn findItemLastBooking(List<BookingDtoReturn> bookingDtoReturnList, LocalDateTime localDateTime) {
+
+ /*       if (bookingDtoReturnList == null || bookingDtoReturnList.isEmpty() ) {
+            return null;
+        }*/
+
+        return bookingDtoReturnList.stream()
+                .filter(bookingDtoReturn -> bookingDtoReturn.getStart().isBefore(localDateTime))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private BookingDtoReturn findItemNextBooking(List<BookingDtoReturn> bookingDtoReturnList, LocalDateTime localDateTime) {
+
+/*        if (bookingDtoReturnList == null || bookingDtoReturnList.isEmpty() ) {
+            return null;
+        }*/
+
+        return bookingDtoReturnList.stream()
+                .filter(bookingDtoReturn -> bookingDtoReturn.getStart().isAfter(localDateTime))
+                .findFirst()
+                .orElse(null);
+    }
+
+
 }

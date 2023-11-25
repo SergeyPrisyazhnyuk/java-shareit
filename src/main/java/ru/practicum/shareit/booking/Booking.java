@@ -2,13 +2,11 @@ package ru.practicum.shareit.booking;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * TODO Sprint add-bookings.
@@ -43,13 +41,13 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private BookingStatus bookingStatus;
+    private BookingStatus status;
 
     public Booking(LocalDateTime start, LocalDateTime end, Item item, User booker, BookingStatus bookingStatus) {
         this.start = start;
         this.end = end;
         this.item = item;
         this.booker = booker;
-        this.bookingStatus = bookingStatus;
+        this.status = bookingStatus;
     }
 }
