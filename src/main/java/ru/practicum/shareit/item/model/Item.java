@@ -31,17 +31,9 @@ public class Item {
     @Column(name = "available", nullable = false)
     private Boolean available;
 
-/*    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude*/
     @Column(name = "owner_id", nullable = false)
     private Long owner;
 
-/*    @ManyToOne
-    @JoinColumn(name = "request_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude*/
    @Column(name = "request_id", nullable = false)
    private Long request;
 

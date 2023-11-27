@@ -120,31 +120,14 @@ public class ItemServiceImpl implements ItemService {
             return itemDto;
         }
 
-        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item , BookingStatus.APPROVED);
+        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item, BookingStatus.APPROVED);
 
         List<BookingDtoReturn> bookingDtoReturnList = bookings.stream()
                 .map(BookingMapper::bookingDtoReturn)
                 .collect(toList());
 
-        System.out.println("*********************** bookingDtoReturnList       ********************************");
-        System.out.println(bookingDtoReturnList);
-        System.out.println("***********************************************************************************");
-
-        System.out.println("*********************** bookingDtoReturn    LAST   ********************************");
-        System.out.println(findItemLastBooking(bookingDtoReturnList,LocalDateTime.now()));
-        System.out.println("***********************************************************************************");
-
-        System.out.println("*********************** bookingDtoReturn    NEXT   ********************************");
-        System.out.println(findItemNextBooking(bookingDtoReturnList,LocalDateTime.now()));
-        System.out.println("***********************************************************************************");
-
-
-        itemDto.setLastBooking(findItemLastBooking(bookingDtoReturnList,LocalDateTime.now()));
-        itemDto.setNextBooking(findItemNextBooking(bookingDtoReturnList,LocalDateTime.now()));
-
-        System.out.println("*********************** itemDto                    ********************************");
-        System.out.println(itemDto);
-        System.out.println("***********************************************************************************");
+        itemDto.setLastBooking(findItemLastBooking(bookingDtoReturnList, LocalDateTime.now()));
+        itemDto.setNextBooking(findItemNextBooking(bookingDtoReturnList, LocalDateTime.now()));
 
         return itemDto;
     }
@@ -157,54 +140,6 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
-/*
-        List<Item> itemList = itemRepository.findAllByOwnerId(userId)
-                .stream()
-                .sorted(Comparator.comparing(Item::getId))
-                .collect(Collectors.toList());
-
-        List<Booking> bookings = bookingRepository.findAllByItemInAndStatusOrderByStartAsc(itemList , BookingStatus.APPROVED);
-
-        List<BookingDtoReturn> bookingDtoReturnList = bookings.stream()
-                .map(BookingMapper::bookingDtoReturn)
-                .collect(Collectors.toList());
-
-        System.out.println("**************    itemList   ************************");
-        System.out.println(itemList);
-
-        System.out.println("**************    bookings   ************************");
-        System.out.println(bookings);
-
-        System.out.println("**************    bookingDtoReturnList   ************************");
-        System.out.println(bookingDtoReturnList);
-
-
-        System.out.println("**************    findItemLastBooking(bookingDtoReturnList, LocalDateTime.now())   ************************");
-        System.out.println(findItemLastBooking(bookingDtoReturnList, LocalDateTime.now()));
-
-        System.out.println("**************    findItemNextBooking(bookingDtoReturnList, LocalDateTime.now())   ************************");
-        System.out.println(findItemNextBooking(bookingDtoReturnList, LocalDateTime.now()));
-
-
-        List<ItemBookingDto> itemDtos = new ArrayList<>();
-
-        if (bookingDtoReturnList.isEmpty()) {
-            itemDtos = itemList
-                    .stream()
-                    .map(ItemMapper::toItemBookingDto)
-                    .collect(Collectors.toList());
-        } else {
-
-            itemDtos = itemList
-                    .stream()
-                    .map(item -> ItemMapper.toItemBookingDto(
-                            item,
-                            findItemLastBooking(bookingDtoReturnList, LocalDateTime.now()),
-                            findItemNextBooking(bookingDtoReturnList, LocalDateTime.now())
-                    ))
-                    .collect(Collectors.toList());
-        }
-*/
         List<Item> itemList = itemRepository.findAllByOwnerId(userId)
                 .stream()
                 .sorted(Comparator.comparing(Item::getId))

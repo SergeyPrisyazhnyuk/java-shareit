@@ -43,11 +43,4 @@ public class ItemDto {
         this.request = request;
     }
 
-    public ItemDto(Long id, String name, String description, Boolean available) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
-
 }
