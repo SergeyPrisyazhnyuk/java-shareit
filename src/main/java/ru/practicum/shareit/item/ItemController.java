@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
@@ -37,11 +38,18 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader(User_ID) Long userId, @PathVariable Long itemId) {
         log.info("Invoke getItemById method with user = {} and itemId = {}", userId, itemId);
-        return itemService.getItemById(userId, itemId);
+
+        ItemDto itemDto = itemService.getItemById(userId, itemId);
+
+        System.out.println("*********************** itemDto  Controller return                   ********************************");
+        System.out.println(itemDto);
+        System.out.println("***********************************************************************************");
+
+        return itemDto;
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(User_ID) Long userId) {
+    public List<ItemBookingDto> getAll(@RequestHeader(User_ID) Long userId) {
         log.info("Invoke getAll method with user = {} ", userId);
         return itemService.getAll(userId);
     }

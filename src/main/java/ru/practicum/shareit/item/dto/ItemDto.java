@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@Accessors(chain = true)
+@Accessors(chain = true)
 public class ItemDto {
     private Long id;
 
@@ -49,4 +49,5 @@ public class ItemDto {
         this.description = description;
         this.available = available;
     }
+
 }

@@ -27,14 +27,6 @@ public class ItemMapper {
                 itemDto.getRequest()
         );
     }
-
-/*    public static ItemBookingDto toItemBookingDto(Item item) {
-        return new ItemBookingDto(
-            item.getId(),
-            item.getName()
-        );
-    }*/
-
     public static ItemBookingDto toItemBookingDto(Item item) {
         return new ItemBookingDto(
                 item.getId(),
@@ -44,15 +36,15 @@ public class ItemMapper {
         );
     }
 
-    public static ItemBookingDto toItemBookingDto(Item item, BookingDtoReturn lastBooking, BookingDtoReturn nextBooking) {
-        return new ItemBookingDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable(),
-                lastBooking,
-                nextBooking
-        );
+        public static ItemBookingDto toItemBookingDto(Item item, BookingDtoReturn lastBooking, BookingDtoReturn nextBooking) {
+            return new ItemBookingDto(
+                    item.getId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getAvailable(),
+                    lastBooking,
+                    nextBooking
+            );
     }
 
 }

@@ -52,4 +52,11 @@ public class Item {
         this.owner = owner;
         this.request = request;
     }
+
+    public Item(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+
+    }
 }

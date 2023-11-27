@@ -43,6 +43,10 @@ public class BookingServiceImpl implements BookingService {
 
         Item item = itemO.get();
 
+        if (userId.equals(item.getOwner())) {
+            throw new CommonValidationException404("Нельзя брнировать свою же вещь");
+        }
+
         bookingDtoValidation(bookingDto, item);
 
         Booking booking = new Booking(

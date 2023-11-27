@@ -94,9 +94,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " order by b.start_date asc limit 1 ", nativeQuery = true)
     Optional<Booking> findNextBooking(Long itemId, LocalDateTime localDateTime);
 
-
-
-    List<Booking> findAllByItemAndStatusOrderByStartAsc(Item items, BookingStatus bookingStatus);
+    List<Booking> findAllByItemAndStatusOrderByStartAsc(Item item, BookingStatus bookingStatus);
 
     List<Booking> findAllByItemInAndStatusOrderByStartAsc(List<Item> items, BookingStatus bookingStatus);
 

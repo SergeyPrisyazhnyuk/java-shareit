@@ -21,10 +21,10 @@ public class ItemBookingDto {
 
     private BookingDtoReturn nextBooking;
 
-    public ItemBookingDto(Long id, String name) {
+/*    public ItemBookingDto(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
+    }*/
 
     public ItemBookingDto(Long id, String name, String description, Boolean available) {
         this.id = id;
