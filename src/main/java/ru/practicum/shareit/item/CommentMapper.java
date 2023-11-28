@@ -8,19 +8,13 @@ import ru.practicum.shareit.user.User;
 
 public class CommentMapper {
 
-    public static CommentDtoReturn toCommentsDto(Comment comment) {
+    public static CommentDtoReturn toCommentDtoReturn(Comment comment) {
         return new CommentDtoReturn(
                 comment.getId(),
                 comment.getText(),
                 comment.getItem().getId(),
                 comment.getAuthor().getName(),
                 comment.getCreated()
-        );
-    }
-
-    public static CommentDto toCommentDto(Comment comment) {
-        return new CommentDto(
-                comment.getText()
         );
     }
 

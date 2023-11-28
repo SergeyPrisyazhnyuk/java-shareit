@@ -128,40 +128,6 @@ public class ItemServiceImpl implements ItemService {
             return itemDto;
         }
 
-/*        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item, BookingStatus.APPROVED);
-
-        List<BookingDtoReturn> bookingDtoReturnList = bookings.stream()
-                .map(BookingMapper::bookingDtoReturn)
-                .collect(toList());
-
-        itemDto.setLastBooking(findItemLastBooking(bookingDtoReturnList, LocalDateTime.now()));
-        itemDto.setNextBooking(findItemNextBooking(bookingDtoReturnList, LocalDateTime.now()));
-
-                */
-
-/*
-        Optional<Booking> lastBookingO = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
-        Optional<Booking> nextBookingO = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
-
-        if (lastBookingO.isEmpty()) {
-            return itemDto;
-        }
-
-        if (nextBookingO.isEmpty()) {
-            return itemDto;
-        }
-        Booking lastBooking = lastBookingO.get();
-        Booking nextBooking = nextBookingO.get();
-*/
-
-/*
-
-        BookingDtoReturn lastBookingDtoReturn = findItemLastBookingById(itemId, LocalDateTime.now());
-        BookingDtoReturn nextBookingDtoReturn = findItemNextBookingById(itemId, LocalDateTime.now());
-*/
-
-
-
         itemDto.setLastBooking(findItemLastBookingById(itemId, LocalDateTime.now()));
         itemDto.setNextBooking(findItemNextBookingById(itemId, LocalDateTime.now()));
 
@@ -186,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
                 .collect(toList());
 
         Map<Long, List<CommentDtoReturn>> comments = commentRepository.findAllByItemIdIn(itemIdList).stream()
-                .map(CommentMapper::toCommentsDto)
+                .map(CommentMapper::toCommentDtoReturn)
                 .collect(groupingBy(CommentDtoReturn::getItemId, toList()));
 
 
@@ -288,27 +254,17 @@ public class ItemServiceImpl implements ItemService {
 
         List<Booking> bookings = bookingRepository.findAllByUserAndItem(userId, itemId, LocalDateTime.now());
 
-
-        System.out.println("******************************* itemId **********************************************");
-        System.out.println(itemId);
-        System.out.println("******************************* userId **********************************************");
-        System.out.println(userId);
-        System.out.println("******************************* addComment  bookings ********************************");
-        System.out.println(bookings);
-        System.out.println("*************************************************************************************");
-
-
         if (bookings.isEmpty()) {
             throw new CommonValidationException400("Не найдены букинги вещи " + itemId + " пользователем " + userId);
         }
 
-        return CommentMapper.toCommentsDto(commentRepository.save(CommentMapper.toComment(commentDto, item, user)));
+        return CommentMapper.toCommentDtoReturn(commentRepository.save(CommentMapper.toComment(commentDto, item, user)));
     }
 
     public List<CommentDtoReturn> getAllCommentsByItemId(Long itemId) {
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
         return comments.stream()
-                .map(CommentMapper::toCommentsDto)
+                .map(CommentMapper::toCommentDtoReturn)
                 .collect(Collectors.toList());
     }
 
