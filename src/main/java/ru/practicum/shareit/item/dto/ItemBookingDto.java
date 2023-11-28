@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,8 @@ public class ItemBookingDto {
     private BookingDtoReturn lastBooking;
 
     private BookingDtoReturn nextBooking;
+
+    private List<CommentDtoReturn> comments;
 
     public ItemBookingDto(Long id, String name, String description, Boolean available) {
         this.id = id;

@@ -8,11 +8,16 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
+import ru.practicum.shareit.exception.CommonValidationException400;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.WrongUserException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoReturn;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
@@ -31,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -107,20 +113,22 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Не найден юзер с id: " + userId);
         }
 
-        Optional<Item> itemOpt = itemRepository.findById(itemId);
+        Optional<Item> itemO = itemRepository.findById(itemId);
 
-        if (itemOpt.isEmpty()) {
+        if (itemO.isEmpty()) {
             throw new NotFoundException("Не найден айтем с id: " + itemId);
         }
 
-        Item item = itemOpt.get();
+        Item item = itemO.get();
         ItemDto itemDto = ItemMapper.toItemDtoWithId(item);
+
+        itemDto.setComments(getAllCommentsByItemId(itemId));
 
         if (!userId.equals(itemDto.getOwner())) {
             return itemDto;
         }
 
-        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item, BookingStatus.APPROVED);
+/*        List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartAsc(item, BookingStatus.APPROVED);
 
         List<BookingDtoReturn> bookingDtoReturnList = bookings.stream()
                 .map(BookingMapper::bookingDtoReturn)
@@ -128,6 +136,34 @@ public class ItemServiceImpl implements ItemService {
 
         itemDto.setLastBooking(findItemLastBooking(bookingDtoReturnList, LocalDateTime.now()));
         itemDto.setNextBooking(findItemNextBooking(bookingDtoReturnList, LocalDateTime.now()));
+
+                */
+
+/*
+        Optional<Booking> lastBookingO = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
+        Optional<Booking> nextBookingO = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
+
+        if (lastBookingO.isEmpty()) {
+            return itemDto;
+        }
+
+        if (nextBookingO.isEmpty()) {
+            return itemDto;
+        }
+        Booking lastBooking = lastBookingO.get();
+        Booking nextBooking = nextBookingO.get();
+*/
+
+/*
+
+        BookingDtoReturn lastBookingDtoReturn = findItemLastBookingById(itemId, LocalDateTime.now());
+        BookingDtoReturn nextBookingDtoReturn = findItemNextBookingById(itemId, LocalDateTime.now());
+*/
+
+
+
+        itemDto.setLastBooking(findItemLastBookingById(itemId, LocalDateTime.now()));
+        itemDto.setNextBooking(findItemNextBookingById(itemId, LocalDateTime.now()));
 
         return itemDto;
     }
@@ -144,6 +180,15 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .sorted(Comparator.comparing(Item::getId))
                 .collect(Collectors.toList());
+
+        List<Long> itemIdList = itemList.stream()
+                .map(Item::getId)
+                .collect(toList());
+
+        Map<Long, List<CommentDtoReturn>> comments = commentRepository.findAllByItemIdIn(itemIdList).stream()
+                .map(CommentMapper::toCommentsDto)
+                .collect(groupingBy(CommentDtoReturn::getItemId, toList()));
+
 
         Map<Long, List<BookingDtoReturn>> bookingDtoReturnMap = bookingRepository.findAllByItemInAndStatusOrderByStartAsc(itemList, BookingStatus.APPROVED)
                 .stream()
@@ -164,7 +209,8 @@ public class ItemServiceImpl implements ItemService {
                     .map(item -> ItemMapper.toItemBookingDto(
                             item,
                             findItemLastBooking(bookingDtoReturnMap.get(item.getId()), LocalDateTime.now()),
-                            findItemNextBooking(bookingDtoReturnMap.get(item.getId()), LocalDateTime.now())
+                            findItemNextBooking(bookingDtoReturnMap.get(item.getId()), LocalDateTime.now()),
+                            comments.get(item.getId())
 
                     ))
                     .collect(toList());
@@ -220,6 +266,52 @@ public class ItemServiceImpl implements ItemService {
         return itemDtos;
     }
 
+    @Override
+    @Transactional
+    public CommentDtoReturn addComment(Long userId, CommentDto commentDto, Long itemId) {
+
+        Optional<User> userO = userRepository.findById(userId);
+
+        if (userO.isEmpty()) {
+            throw new NotFoundException("Не найден юзер с id: " + userId);
+        }
+
+        User user = userO.get();
+
+        Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+        if (itemOpt.isEmpty()) {
+            throw new NotFoundException("Не найден айтем с id: " + itemId);
+        }
+
+        Item item = itemOpt.get();
+
+        List<Booking> bookings = bookingRepository.findAllByUserAndItem(userId, itemId, LocalDateTime.now());
+
+
+        System.out.println("******************************* itemId **********************************************");
+        System.out.println(itemId);
+        System.out.println("******************************* userId **********************************************");
+        System.out.println(userId);
+        System.out.println("******************************* addComment  bookings ********************************");
+        System.out.println(bookings);
+        System.out.println("*************************************************************************************");
+
+
+        if (bookings.isEmpty()) {
+            throw new CommonValidationException400("Не найдены букинги вещи " + itemId + " пользователем " + userId);
+        }
+
+        return CommentMapper.toCommentsDto(commentRepository.save(CommentMapper.toComment(commentDto, item, user)));
+    }
+
+    public List<CommentDtoReturn> getAllCommentsByItemId(Long itemId) {
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
+        return comments.stream()
+                .map(CommentMapper::toCommentsDto)
+                .collect(Collectors.toList());
+    }
+
     private BookingDtoReturn findItemLastBooking(List<BookingDtoReturn> bookingDtoReturnList, LocalDateTime localDateTime) {
 
         if (bookingDtoReturnList == null || bookingDtoReturnList.isEmpty()) {
@@ -244,5 +336,20 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
     }
 
+    private BookingDtoReturn findItemLastBookingById(Long itemId, LocalDateTime localDateTime) {
+
+        Optional<Booking> lastBookingO = bookingRepository.findLastBooking(itemId, localDateTime);
+
+        return lastBookingO.map(BookingMapper::bookingDtoReturn).orElse(null);
+
+    }
+
+    private BookingDtoReturn findItemNextBookingById(Long itemId, LocalDateTime localDateTime) {
+
+        Optional<Booking> nextBookingO = bookingRepository.findNextBooking(itemId, localDateTime);
+
+        return nextBookingO.map(BookingMapper::bookingDtoReturn).orElse(null);
+
+    }
 
 }

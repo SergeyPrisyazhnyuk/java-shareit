@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoReturn;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -39,13 +41,7 @@ public class ItemController {
     public ItemDto getItemById(@RequestHeader(User_ID) Long userId, @PathVariable Long itemId) {
         log.info("Invoke getItemById method with user = {} and itemId = {}", userId, itemId);
 
-        ItemDto itemDto = itemService.getItemById(userId, itemId);
-
-        System.out.println("*********************** itemDto  Controller return                   ********************************");
-        System.out.println(itemDto);
-        System.out.println("***********************************************************************************");
-
-        return itemDto;
+        return itemService.getItemById(userId, itemId);
     }
 
     @GetMapping
@@ -66,5 +62,13 @@ public class ItemController {
         return itemService.search(userId, text);
     }
 
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoReturn addComment(@RequestHeader(User_ID) Long userId,
+                                       @Valid @RequestBody CommentDto commentDto,
+                                       @PathVariable Long itemId) {
+        log.info("Invoke saveComment method with user = {}, comment = {} and text = {}", userId, commentDto, itemId);
+        return itemService.addComment(userId, commentDto, itemId);
+
+    }
 
 }

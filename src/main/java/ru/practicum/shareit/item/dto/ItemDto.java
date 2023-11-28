@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -33,6 +34,8 @@ public class ItemDto {
     private BookingDtoReturn lastBooking;
 
     private BookingDtoReturn nextBooking;
+
+    private List<CommentDtoReturn> comments;
 
     public ItemDto(Long id, String name, String description, Boolean available, Long owner, Long request) {
         this.id = id;

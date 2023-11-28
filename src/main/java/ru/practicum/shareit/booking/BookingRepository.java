@@ -2,9 +2,9 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.model.Item;
 
-import java.awt.print.Book;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -97,5 +97,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByItemAndStatusOrderByStartAsc(Item item, BookingStatus bookingStatus);
 
     List<Booking> findAllByItemInAndStatusOrderByStartAsc(List<Item> items, BookingStatus bookingStatus);
+
+    @Query(value = "select b.* from bookings b join items i on i.id = b.item_id " +
+            " where b.booker_id = ?1 and b.item_id = ?2 and b.end_date < ?3 " +
+            " and b.status = 'APPROVED' order by b.id desc", nativeQuery = true)
+    @Transactional
+    List<Booking> findAllByUserAndItem(Long userId, Long itemId, LocalDateTime localDateTime);
 
 }
