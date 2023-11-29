@@ -224,12 +224,10 @@ public class ItemServiceImpl implements ItemService {
 
         List<Item> itemList = itemRepository.search(text);
 
-        List<ItemDto> itemDtos = itemList
+        return itemList
                 .stream()
                 .map(ItemMapper::toItemDtoWithId)
                 .collect(toList());
-
-        return itemDtos;
     }
 
     @Override
