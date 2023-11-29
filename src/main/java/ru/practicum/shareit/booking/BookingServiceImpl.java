@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -30,18 +30,16 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    @Transactional
     public BookingDtoReturn save(Long userId, BookingDto bookingDto) {
 
         User user = userValidation(userId);
 
-        Optional<Item> itemO = itemRepository.findById(bookingDto.getItemId());
-
-        if (itemO.isEmpty()) {
+        Optional<Item> itemOptional = itemRepository.findById(bookingDto.getItemId());
+        if (itemOptional.isEmpty()) {
             throw new NotFoundException("Не найден айтем с id: " + bookingDto.getItemId());
         }
 
-        Item item = itemO.get();
+        Item item = itemOptional.get();
 
         if (userId.equals(item.getOwner())) {
             throw new CommonValidationException404("Нельзя брнировать свою же вещь");
@@ -63,7 +61,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public BookingDtoReturn updateBookingStatus(Long userId, Long bookingId, Boolean status) {
 
         Booking booking = getBookingByBookingId(bookingId);
@@ -80,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public BookingDtoReturn getBookingByUserId(Long userId, Long bookingId) {
 
         userValidation(userId);
@@ -97,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BookingDtoReturn> getAll(Long bookerId, String state) {
 
         if (userRepository.findById(bookerId).isEmpty()) {
@@ -144,7 +141,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BookingDtoReturn> getAllByOwner(Long ownerId, String state) {
         if (userRepository.findById(ownerId).isEmpty()) {
             throw new NotFoundException("Не найден юзер с id: " + ownerId);
