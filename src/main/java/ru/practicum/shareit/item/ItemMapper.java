@@ -30,6 +30,7 @@ public class ItemMapper {
                 itemDto.getRequest()
         );
     }
+
     public static ItemBookingDto toItemBookingDto(Item item) {
         return new ItemBookingDto(
                 item.getId(),
@@ -39,16 +40,16 @@ public class ItemMapper {
         );
     }
 
-        public static ItemBookingDto toItemBookingDto(Item item, BookingDtoReturn lastBooking, BookingDtoReturn nextBooking, List<CommentDtoReturn> commentDtoReturnList) {
-            return new ItemBookingDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    lastBooking,
-                    nextBooking,
-                    commentDtoReturnList
-            );
+    public static ItemBookingDto toItemBookingDto(Item item, BookingDtoReturn lastBooking, BookingDtoReturn nextBooking, List<CommentDtoReturn> commentDtoReturnList) {
+        return new ItemBookingDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                lastBooking,
+                nextBooking,
+                commentDtoReturnList
+        );
     }
 
 

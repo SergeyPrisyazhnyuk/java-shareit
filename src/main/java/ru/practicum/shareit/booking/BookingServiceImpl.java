@@ -50,11 +50,11 @@ public class BookingServiceImpl implements BookingService {
         bookingDtoValidation(bookingDto, item);
 
         Booking booking = new Booking(
-                                bookingDto.getStart(),
-                                bookingDto.getEnd(),
-                                item,
-                                user,
-                                BookingStatus.WAITING
+                bookingDto.getStart(),
+                bookingDto.getEnd(),
+                item,
+                user,
+                BookingStatus.WAITING
         );
 
         bookingRepository.save(booking);
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
 
         bookingValidationUpdate(booking, userId);
 
-        booking.setStatus(status ? BookingStatus.APPROVED : BookingStatus.REJECTED );
+        booking.setStatus(status ? BookingStatus.APPROVED : BookingStatus.REJECTED);
 
         bookingRepository.save(booking);
 
@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (!booking.getBooker().getId().equals(userId)
                 && !booking.getItem().getOwner().equals(userId)
-            ) {
+        ) {
             throw new CommonValidationException404("Current user is neither the item owner nor the booker");
         }
 
@@ -104,42 +104,43 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Не найден юзер с id: " + bookerId);
         }
 
-            bookingStateValidation(state);
+        bookingStateValidation(state);
 
         switch (state) {
-            case "ALL" :
+            case "ALL":
                 return bookingRepository.findAllBookingsByBookerId(bookerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "CURRENT" :
+            case "CURRENT":
                 return bookingRepository.findCurrentBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "PAST" :
+            case "PAST":
                 return bookingRepository.findPastBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "FUTURE" :
+            case "FUTURE":
                 return bookingRepository.findFutureBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "WAITING" :
+            case "WAITING":
                 return bookingRepository.findWaitingBookingsByBookerId(bookerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "REJECTED" :
+            case "REJECTED":
                 return bookingRepository.findRejectedBookingsByBookerId(bookerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            default: throw new WrongStateException("Unknown state: " + state);
+            default:
+                throw new WrongStateException("Unknown state: " + state);
 
-            }
+        }
     }
 
     @Override
@@ -152,40 +153,40 @@ public class BookingServiceImpl implements BookingService {
         bookingStateValidation(state);
 
         switch (state) {
-            case "ALL" :
+            case "ALL":
                 return bookingRepository.findAllBookingsByOwnerId(ownerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "CURRENT" :
+            case "CURRENT":
                 return bookingRepository.findCurrentBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "PAST" :
+            case "PAST":
                 return bookingRepository.findPastBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "FUTURE" :
+            case "FUTURE":
                 return bookingRepository.findFutureBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "WAITING" :
+            case "WAITING":
                 return bookingRepository.findWaitingBookingsByOwnerId(ownerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            case "REJECTED" :
+            case "REJECTED":
                 return bookingRepository.findRejectedBookingsByOwnerId(ownerId).stream()
                         .map(BookingMapper::bookingDtoReturn)
                         .collect(Collectors.toList());
 
-            default: throw new WrongStateException("Unknown state: " + state);
+            default:
+                throw new WrongStateException("Unknown state: " + state);
         }
     }
-
 
 
     private Booking getBookingByBookingId(Long bookingId) {
@@ -198,7 +199,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private User userValidation(Long userId) {
-        Optional<User> userO =  userRepository.findById(userId);
+        Optional<User> userO = userRepository.findById(userId);
 
         if (userO == null || userO.isEmpty()) {
             throw new NotFoundException("Не найден юзер с id: " + userId);
@@ -233,7 +234,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    public void bookingStateValidation(String state)  {
+    public void bookingStateValidation(String state) {
         BookingState bookingState = BookingState.getState(state);
         if (bookingState == null) {
             throw new WrongStateException("Unknown state: " + state);
