@@ -106,4 +106,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Transactional
     List<BookingDtoInterface> findAllByUserAndItem(Long userId, Long itemId, LocalDateTime localDateTime);
 
+
 }
