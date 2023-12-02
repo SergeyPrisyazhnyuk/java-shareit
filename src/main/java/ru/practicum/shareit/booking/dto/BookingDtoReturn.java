@@ -1,11 +1,10 @@
 package ru.practicum.shareit.booking.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
+import ru.practicum.shareit.item.dto.ItemBookingInterfaceDto;
 import ru.practicum.shareit.user.UserDto;
 
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class BookingDtoReturn {
 
     private BookingStatus status;
 
-    private ItemBookingDto item;
+    private ItemBookingInterfaceDto item;
 
     private UserDto booker;
 
@@ -32,7 +31,5 @@ public class BookingDtoReturn {
     public Long getItemId() {
         return item.getId();
     }
-
-
 
 }

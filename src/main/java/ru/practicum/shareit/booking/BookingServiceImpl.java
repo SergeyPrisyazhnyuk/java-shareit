@@ -106,32 +106,32 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 return bookingRepository.findAllBookingsByBookerId(bookerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "CURRENT":
                 return bookingRepository.findCurrentBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "PAST":
                 return bookingRepository.findPastBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "FUTURE":
                 return bookingRepository.findFutureBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "WAITING":
                 return bookingRepository.findWaitingBookingsByBookerId(bookerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "REJECTED":
                 return bookingRepository.findRejectedBookingsByBookerId(bookerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             default:
@@ -152,34 +152,33 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 return bookingRepository.findAllBookingsByOwnerId(ownerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "CURRENT":
                 return bookingRepository.findCurrentBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "PAST":
                 return bookingRepository.findPastBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "FUTURE":
                 return bookingRepository.findFutureBookingsByOwnerId(ownerId, LocalDateTime.now()).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "WAITING":
                 return bookingRepository.findWaitingBookingsByOwnerId(ownerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "REJECTED":
                 return bookingRepository.findRejectedBookingsByOwnerId(ownerId).stream()
-                        .map(BookingMapper::bookingDtoReturn)
+                        .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
-
             default:
                 throw new WrongStateException("Unknown state: " + state);
         }

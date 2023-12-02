@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -155,10 +154,9 @@ public class ItemServiceImpl implements ItemService {
                 .map(CommentMapper::toCommentDtoReturn)
                 .collect(groupingBy(CommentDtoReturn::getItemId, toList()));
 
-
         Map<Long, List<BookingDtoReturn>> bookingDtoReturnMap = bookingRepository.findAllByItemInAndStatusOrderByStartAsc(itemList, BookingStatus.APPROVED)
                 .stream()
-                .map(BookingMapper::bookingDtoReturn)
+                .map(BookingMapper::bookingDtoReturnFromInterface)
                 .collect(groupingBy(BookingDtoReturn::getItemId, toList()));
 
         List<ItemBookingDto> itemDtos = new ArrayList<>();
@@ -250,7 +248,10 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = itemOpt.get();
 
-        List<Booking> bookings = bookingRepository.findAllByUserAndItem(userId, itemId, LocalDateTime.now());
+        List<BookingDtoReturn> bookings = bookingRepository.findAllByUserAndItem(userId, itemId, LocalDateTime.now())
+                .stream()
+                .map(BookingMapper::bookingDtoReturnFromInterface)
+                .collect(Collectors.toList());
 
         if (bookings.isEmpty()) {
             throw new CommonValidationException400("Не найдены букинги вещи " + itemId + " пользователем " + userId);
@@ -292,17 +293,17 @@ public class ItemServiceImpl implements ItemService {
 
     private BookingDtoReturn findItemLastBookingById(Long itemId, LocalDateTime localDateTime) {
 
-        Optional<Booking> lastBookingO = bookingRepository.findLastBooking(itemId, localDateTime);
+        Optional<BookingDtoReturn> lastBookingO = bookingRepository.findLastBooking(itemId, localDateTime).map(BookingMapper::bookingDtoReturnFromInterface);
 
-        return lastBookingO.map(BookingMapper::bookingDtoReturn).orElse(null);
+        return lastBookingO.orElse(null);
 
     }
 
     private BookingDtoReturn findItemNextBookingById(Long itemId, LocalDateTime localDateTime) {
 
-        Optional<Booking> nextBookingO = bookingRepository.findNextBooking(itemId, localDateTime);
+        Optional<BookingDtoReturn> nextBookingO = bookingRepository.findNextBooking(itemId, localDateTime).map(BookingMapper::bookingDtoReturnFromInterface);
 
-        return nextBookingO.map(BookingMapper::bookingDtoReturn).orElse(null);
+        return nextBookingO.orElse(null);
 
     }
 

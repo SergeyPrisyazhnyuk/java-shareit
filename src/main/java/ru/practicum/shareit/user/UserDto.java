@@ -31,6 +31,7 @@ public class UserDto {
         this.email = email;
     }
 
-
-
+    public UserDto(Long id) {
+        this.id = id;
+    }
 }
