@@ -29,7 +29,7 @@ public class ItemDto {
 
     private Long owner;
 
-    private Long request;
+    private Long requestId;
 
     private BookingDtoReturn lastBooking;
 
@@ -37,13 +37,13 @@ public class ItemDto {
 
     private List<CommentDtoReturn> comments;
 
-    public ItemDto(Long id, String name, String description, Boolean available, Long owner, Long request) {
+    public ItemDto(Long id, String name, String description, Boolean available, Long owner, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
-        this.request = request;
+        this.requestId = requestId;
     }
 
 }
