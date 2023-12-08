@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,75 +17,74 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findAllBookingsByBookerId(Long bookerId);
+    Page<BookingDtoInterface> findAllBookingsByBookerId(Long bookerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " and ?2 between b.start_date and b.end_date " +
             " order by b.start_date asc ", nativeQuery = true)
-    List<BookingDtoInterface> findCurrentBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findCurrentBookingsByBookerId(Long bookerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " and b.end_date < ?2 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findPastBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findPastBookingsByBookerId(Long bookerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " and b.start_date > ?2 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findFutureBookingsByBookerId(Long bookerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findFutureBookingsByBookerId(Long bookerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " and b.status = 'WAITING'" +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findWaitingBookingsByBookerId(Long bookerId);
+    Page<BookingDtoInterface> findWaitingBookingsByBookerId(Long bookerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " and b.status = 'REJECTED' " +
             " order by b.start_date desc", nativeQuery = true)
-    List<BookingDtoInterface> findRejectedBookingsByBookerId(Long bookerId);
+    Page<BookingDtoInterface> findRejectedBookingsByBookerId(Long bookerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findAllBookingsByOwnerId(Long ownerId);
+    Page<BookingDtoInterface> findAllBookingsByOwnerId(Long ownerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " and ?2 between b.start_date and b.end_date " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findCurrentBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findCurrentBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " and b.end_date < ?2 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findPastBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findPastBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " and b.start_date > ?2 " +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findFutureBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime);
+    Page<BookingDtoInterface> findFutureBookingsByOwnerId(Long ownerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " and b.status = 'WAITING'" +
             " order by b.start_date desc ", nativeQuery = true)
-    List<BookingDtoInterface> findWaitingBookingsByOwnerId(Long ownerId);
+    Page<BookingDtoInterface> findWaitingBookingsByOwnerId(Long ownerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
             " and b.status = 'REJECTED' " +
             " order by b.start_date desc", nativeQuery = true)
-    List<BookingDtoInterface> findRejectedBookingsByOwnerId(Long ownerId);
+    Page<BookingDtoInterface> findRejectedBookingsByOwnerId(Long ownerId, Pageable pageable);
 
-//b.id, b.start_date, b.end_date, b.item_id, b.booker_id, b.status
-@Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
+    @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
             " where b.item_id = ?1 and b.start_date < ?2 " +
             " and b.status = 'APPROVED' " +
             " order by b.start_date desc limit 1 ", nativeQuery = true)

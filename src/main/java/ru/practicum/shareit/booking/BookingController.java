@@ -2,11 +2,13 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -47,17 +49,23 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDtoReturn> getAll(@RequestHeader(User_ID) Long bookerId,
-                                         @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Invoke getAll method with userId = {} and state = {} ", bookerId, state);
-        return bookingService.getAll(bookerId, state);
+                                         @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                         @RequestParam(name = "from", defaultValue = "0") @Validated @Min(0) Integer from,
+                                         @RequestParam(name = "size", defaultValue = "10") @Validated @Min(1) Integer size
+    ) {
+        log.info("Invoke getAll method with userId = {} and state = {} and from = {} and size = {} ", bookerId, state, from, size);
+        return bookingService.getAll(bookerId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDtoReturn> getAllByOwner(@RequestHeader(User_ID) Long ownerId,
-                                         @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Invoke getAllByOwner method with userId = {} and state = {} ", ownerId, state);
+                                         @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                                @RequestParam(name = "from", defaultValue = "0") @Validated @Min(0) Integer from,
+                                                @RequestParam(name = "size", defaultValue = "10") @Validated @Min(1) Integer size
+    ) {
+        log.info("Invoke getAllByOwner method with userId = {} and state = {} and from = {} and size = {} ", ownerId, state, from, size);
 
-        return bookingService.getAllByOwner(ownerId, state);
+        return bookingService.getAllByOwner(ownerId, state, from, size);
 
     }
 
