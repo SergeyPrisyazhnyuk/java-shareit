@@ -41,8 +41,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDtoReturn> getAllRequestsFromToSize(@RequestHeader(User_ID) Long userId,
-                                                               @RequestParam(name = "from", defaultValue = "0") @Validated @Min(0) Integer from,
-                                                               @RequestParam(name = "size", defaultValue = "10") @Validated @Min(1) Integer size
+                                                               @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
+                                                               @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size
 
 
                                                                ) {
