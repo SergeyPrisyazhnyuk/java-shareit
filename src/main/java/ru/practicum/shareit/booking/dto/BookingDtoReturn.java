@@ -32,4 +32,10 @@ public class BookingDtoReturn {
         return item.getId();
     }
 
+    public BookingDtoReturn(Long id, Long bookerId) {
+        this.id = id;
+        this.bookerId = bookerId;
+
+    }
+
 }
