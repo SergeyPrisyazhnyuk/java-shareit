@@ -42,9 +42,9 @@ class BookingControllerRETest {
     Integer from = 0;
     Integer size = 10;
 
-
     LocalDateTime start = LocalDateTime.now().plusMinutes(2);
     LocalDateTime end = LocalDateTime.now().plusMinutes(10);
+
     @SneakyThrows
     @Test
     void save_whenInvoked_thenBookingReturns()  {
