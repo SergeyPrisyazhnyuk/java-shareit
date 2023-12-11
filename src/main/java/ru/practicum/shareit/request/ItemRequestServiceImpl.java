@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ItemRequestServiceImpl implements ItemRequestService{
+public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final UserRepository userRepository;
     private final ItemRequestRepository itemRequestRepository;
@@ -53,9 +53,9 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     public List<ItemRequestDtoReturn> getAllRequestsFromToSize(Long userId, Integer from, Integer size) {
         User user = userRequestValidation(userId);
 
-        Pageable pageable = PageRequest.of(from  , size);
+        Pageable pageable = PageRequest.of(from, size);
 
-        List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequestorIdNotOrderByCreated(userId, pageable );
+        List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequestorIdNotOrderByCreated(userId, pageable);
 
         return itemRequestList.stream().map(ItemRequestMapper::toItemRequestDtoReturn).collect(Collectors.toList());
 

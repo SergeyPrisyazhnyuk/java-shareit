@@ -106,32 +106,32 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from <= 0 ? from : (from + size - 1) / size , size)).stream()
+                return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from <= 0 ? from : (from + size - 1) / size, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "CURRENT":
-                return bookingRepository.findCurrentBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findCurrentBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "PAST":
-                return bookingRepository.findPastBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findPastBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "FUTURE":
-                return bookingRepository.findFutureBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findFutureBookingsByBookerId(bookerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "WAITING":
-                return bookingRepository.findWaitingBookingsByBookerId(bookerId, PageRequest.of(from  , size)).stream()
+                return bookingRepository.findWaitingBookingsByBookerId(bookerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "REJECTED":
-                return bookingRepository.findRejectedBookingsByBookerId(bookerId, PageRequest.of(from  , size)).stream()
+                return bookingRepository.findRejectedBookingsByBookerId(bookerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
@@ -152,32 +152,32 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllBookingsByOwnerId(ownerId, PageRequest.of(from  , size)).stream()
+                return bookingRepository.findAllBookingsByOwnerId(ownerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "CURRENT":
-                return bookingRepository.findCurrentBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findCurrentBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "PAST":
-                return bookingRepository.findPastBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findPastBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "FUTURE":
-                return bookingRepository.findFutureBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from  , size)).stream()
+                return bookingRepository.findFutureBookingsByOwnerId(ownerId, LocalDateTime.now(), PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "WAITING":
-                return bookingRepository.findWaitingBookingsByOwnerId(ownerId, PageRequest.of(from  , size)).stream()
+                return bookingRepository.findWaitingBookingsByOwnerId(ownerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
             case "REJECTED":
-                return bookingRepository.findRejectedBookingsByOwnerId(ownerId, PageRequest.of(from  , size)).stream()
+                return bookingRepository.findRejectedBookingsByOwnerId(ownerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
             default:

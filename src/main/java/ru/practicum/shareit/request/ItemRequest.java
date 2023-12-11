@@ -43,7 +43,5 @@ public class ItemRequest {
 
     public ItemRequest(String description) {
         this.description = description;
-    };
-
-
+    }
 }
