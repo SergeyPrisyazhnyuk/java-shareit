@@ -46,4 +46,12 @@ public class ItemDto {
         this.requestId = requestId;
     }
 
+    public ItemDto(String name, String description, Boolean available, Long owner, Long requestId) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+        this.requestId = requestId;
+    }
+
 }

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.restendpointstests;
+package ru.practicum.shareit.itemrequest;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;

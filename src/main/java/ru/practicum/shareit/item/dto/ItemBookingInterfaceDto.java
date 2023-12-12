@@ -11,8 +11,4 @@ public class ItemBookingInterfaceDto {
 
     private String name;
 
-    public ItemBookingInterfaceDto(Long id, String name, String description, Boolean available) {
-        this.id = id;
-        this.name = name;
-    }
 }

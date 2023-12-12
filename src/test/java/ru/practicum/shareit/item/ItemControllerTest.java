@@ -1,4 +1,4 @@
-package ru.practicum.shareit.unittests;
+package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -6,6 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -16,6 +18,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemControllerTest {
@@ -85,7 +89,15 @@ class ItemControllerTest {
 
     }
 
+    @Test
+    void deleteItemById_whenInvoked_thenOk() {
+        ItemController myList = mock(ItemController.class);
+        doNothing().when(myList).deleteItemById(isA(Long.class), isA(Long.class));
+        myList.deleteItemById(0L, 1L);
 
+        verify(myList, times(1)).deleteItemById(0L, 1L);
+
+    }
 
     @Test
     void search_whenInvoked_thenItemExists() {

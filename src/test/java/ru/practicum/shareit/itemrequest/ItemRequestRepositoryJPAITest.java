@@ -1,4 +1,4 @@
-package ru.practicum.shareit.integrationtests;
+package ru.practicum.shareit.itemrequest;
 
 import org.junit.jupiter.api.Test;
 
