@@ -321,7 +321,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         assertThrows(WrongStateException.class,
-                () -> bookingService.getAll(user.getId(), "ERROR", 0 , 1));
+                () -> bookingService.getAll(user.getId(), "ERROR", 0, 1));
 
     }
 
@@ -433,7 +433,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
 
         assertThrows(WrongStateException.class,
-                () -> bookingService.getAllByOwner(owner.getId(), "ERROR", 0 , 1));
+                () -> bookingService.getAllByOwner(owner.getId(), "ERROR", 0, 1));
 
     }
 

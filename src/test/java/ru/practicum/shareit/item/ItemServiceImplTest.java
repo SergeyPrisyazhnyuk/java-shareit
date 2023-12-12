@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -142,7 +141,7 @@ class ItemServiceImplTest {
         WrongUserException wrongUserException = assertThrows(WrongUserException.class,
                     () -> itemService.update(owner.getId(), item.getId(), itemDto));
 
-        assertEquals(wrongUserException.getMessage(), "Пользователь с id " + owner.getId() + " не является владельцем данной вещи и не может ее редактировать" );
+        assertEquals(wrongUserException.getMessage(), "Пользователь с id " + owner.getId() + " не является владельцем данной вещи и не может ее редактировать");
     }
 
     @Test

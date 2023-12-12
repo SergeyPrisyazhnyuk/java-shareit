@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 import ru.practicum.shareit.item.dto.CommentDtoReturn;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
-import ru.practicum.shareit.item.dto.ItemBookingInterfaceDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -31,7 +30,7 @@ class ItemMapperTest {
 
     Item item  = new Item(1L, "itemName", "itemDescription", true, 1L, 2L);
 
-    ItemDto itemDto = new ItemDto("itemDtoName" , "itemDtoDescr", true, 2L, 3L);
+    ItemDto itemDto = new ItemDto("itemDtoName", "itemDtoDescr", true, 2L, 3L);
 
     @Test
     void toItemDtoWithId() {
