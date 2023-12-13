@@ -102,8 +102,6 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Не найден юзер с id: " + bookerId);
         }
 
-        bookingStateValidation(state);
-
         switch (state) {
             case "ALL":
                 return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from <= 0 ? from : (from + size - 1) / size, size)).stream()
@@ -147,8 +145,6 @@ public class BookingServiceImpl implements BookingService {
         if (userRepository.findById(ownerId).isEmpty()) {
             throw new NotFoundException("Не найден юзер с id: " + ownerId);
         }
-
-        bookingStateValidation(state);
 
         switch (state) {
             case "ALL":
@@ -228,13 +224,6 @@ public class BookingServiceImpl implements BookingService {
 
         if (bookingDto.getEnd().isEqual(bookingDto.getStart())) {
             throw new BookingValidationException("End of booking date can't be equal start date!");
-        }
-    }
-
-    public void bookingStateValidation(String state) {
-        BookingState bookingState = BookingState.getState(state);
-        if (bookingState == null) {
-            throw new WrongStateException("Unknown state: " + state);
         }
     }
 

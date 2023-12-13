@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import net.bytebuddy.pool.TypePool;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,8 +25,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
@@ -50,10 +51,17 @@ class BookingServiceImplTest {
 
     User owner = new User(2L, "owner", "owner@yandex.ru");
 
+    User noWho = new User(3L, "nowWho", "nowWho@yandex.ru");
+
     Item item = new Item(1L, "item", "itemdescription", true, owner.getId(), 1L);
+
+    Item item2 = new Item(2L, "item", "itemdescription", true, owner.getId(), 1L);
+
+    Item itemEmpty = new Item();
 
     Booking booking = new Booking(1L, start, end, item, user, BookingStatus.APPROVED);
 
+    Booking booking2 = new Booking(3L, start, end, item2, user, BookingStatus.APPROVED);
     Booking bookingW = new Booking(2L, start.plusMinutes(11), end.plusMinutes(15), item, user, BookingStatus.WAITING);
 
     BookingDto bookingDto = new BookingDto(item.getId(), start, end);
@@ -122,6 +130,30 @@ class BookingServiceImplTest {
                 () -> bookingService.save(user.getId(), bookingDto));
 
         assertEquals(bookingTimeException.getMessage(), "Не найден юзер с id: " + user.getId());
+    }
+
+    @Test
+    void save_whenInvoked_ThenItemNotFoundException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(bookingDto.getItemId())).thenReturn(Optional.ofNullable(null));
+
+        NotFoundException bookingTimeException = assertThrows(NotFoundException.class,
+                () -> bookingService.save(user.getId(), bookingDto));
+
+        assertEquals(bookingTimeException.getMessage(), "Не найден айтем с id: " + bookingDto.getItemId());
+    }
+
+    @Test
+    void save_whenInvoked_OwnerBroneException() {
+
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(bookingDto.getItemId())).thenReturn(Optional.of(item));
+
+        CommonValidationException404 bookingTimeException = assertThrows(CommonValidationException404.class,
+                () -> bookingService.save(owner.getId(), bookingDto));
+
+        assertEquals(bookingTimeException.getMessage(), "Нельзя брнировать свою же вещь");
     }
 
     @Test
@@ -205,7 +237,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByUserId() {
+    void getBookingByUserId_whenInvoked_ThenOk() {
 
         BookingDtoReturn bookingDtoReturn = BookingMapper.bookingDtoReturn(booking);
 
@@ -217,6 +249,32 @@ class BookingServiceImplTest {
         assertEquals(booking.getId(), bookingDtoReturn.getId());
         assertEquals(booking.getStart(), bookingDtoReturn1.getStart());
         assertEquals(booking.getId(), bookingDtoReturn1.getId());
+
+    }
+
+    @Test
+    void getBookingByUserId_whenInvoked_ThenCommonValidationException() {
+
+        when(userRepository.findById(noWho.getId())).thenReturn(Optional.of(noWho));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+
+        CommonValidationException404 bookingTimeException = assertThrows(CommonValidationException404.class,
+                () -> bookingService.getBookingByUserId(noWho.getId(), booking.getId()));
+
+        assertEquals(bookingTimeException.getMessage(), "Current user is neither the item owner nor the booker");
+
+    }
+
+    @Test
+    void getBookingByUserId_whenInvoked_ThenCommonValidationExceptionNext() {
+
+        when(userRepository.findById(noWho.getId())).thenReturn(Optional.of(noWho));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking2));
+
+        CommonValidationException404 bookingTimeException = assertThrows(CommonValidationException404.class,
+                () -> bookingService.getBookingByUserId(noWho.getId(), booking2.getId()));
+
+        assertEquals(bookingTimeException.getMessage(), "Current user is neither the item owner nor the booker");
 
     }
 
@@ -234,6 +292,16 @@ class BookingServiceImplTest {
         assertEquals(bookingDtoReturn.get(0).getId(), bookingDtoReturn1.get(0).getId());
         assertEquals(bookingDtoReturn.get(0).getStart(), bookingDtoReturn1.get(0).getStart());
 
+    }
+
+    @Test
+    void getAll_findAllBookingsByBookerId_UserNotFound() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(null));
+
+        NotFoundException bookingTimeException = assertThrows(NotFoundException.class,
+                () -> bookingService.getAll(user.getId(), "ALL", 0, 1));
+
+        assertEquals(bookingTimeException.getMessage(), "Не найден юзер с id: " + user.getId());
     }
 
     @Test
@@ -317,13 +385,22 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAll_wrongState() {
-
+    void getAll_wrongStateException() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-
-        assertThrows(WrongStateException.class,
+        WrongStateException wrongStateException = assertThrows(WrongStateException.class,
                 () -> bookingService.getAll(user.getId(), "ERROR", 0, 1));
 
+        assertEquals(wrongStateException.getMessage(), "Unknown state: ERROR");
+    }
+
+    @Test
+    void getAllByOwner_findAllBookingsByBookerId_UserNotFound() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(null));
+
+        NotFoundException bookingTimeException = assertThrows(NotFoundException.class,
+                () -> bookingService.getAllByOwner(user.getId(), "ALL", 0, 1));
+
+        assertEquals(bookingTimeException.getMessage(), "Не найден юзер с id: " + user.getId());
     }
 
     @Test
@@ -429,13 +506,13 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwner_wrongState() {
+    void  getAllByOwner_wrongState() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        WrongStateException wrongStateException = assertThrows(WrongStateException.class,
+                () -> bookingService.getAllByOwner(user.getId(), "ERROR", 0, 1));
 
-        assertThrows(WrongStateException.class,
-                () -> bookingService.getAllByOwner(owner.getId(), "ERROR", 0, 1));
-
+        assertEquals(wrongStateException.getMessage(), "Unknown state: ERROR");
     }
 
 }

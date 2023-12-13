@@ -16,12 +16,17 @@ class BookingTest {
     void testEquals() {
 
         booking.setId(0L);
-
         Booking booking1 = booking;
-
         boolean trueIs = booking.equals(booking1);
+        boolean falseIs = booking.equals(null);
+
+        Booking booking2 = new Booking();
+        booking.setId(0L);
+        boolean trueIsToo = booking.equals(booking2);
 
         assertTrue(trueIs);
+        assertFalse(trueIsToo);
+        assertFalse(falseIs);
 
     }
 
