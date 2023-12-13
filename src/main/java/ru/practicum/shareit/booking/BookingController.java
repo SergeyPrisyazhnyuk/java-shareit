@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class BookingController {
 
     private static final String User_ID = "X-Sharer-User-Id";
