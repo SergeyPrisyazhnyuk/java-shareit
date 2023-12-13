@@ -5,12 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoInterface;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 import ru.practicum.shareit.exception.CommonValidationException400;
@@ -73,6 +71,7 @@ class ItemServiceImplTest {
     CommentDtoReturn commentDtoR = CommentMapper.toCommentDtoReturn(comment);
 
     BookingDtoInterface bookingDtoInterface = new BookingDtoInterface() {
+
         @Override
         public Long getBookingId() {
             return 1L;
@@ -114,7 +113,7 @@ class ItemServiceImplTest {
         ItemDto itemDto = ItemMapper.toItemDtoWithId(item);
         when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
 
-        ItemDto itemDtoResult  = itemService.save(owner.getId(), itemDto);
+        ItemDto itemDtoResult = itemService.save(owner.getId(), itemDto);
         itemDtoResult.setId(itemDto.getId());
 
         assertEquals(itemDto.getId(), itemDtoResult.getId());
@@ -139,7 +138,7 @@ class ItemServiceImplTest {
         when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
         when(itemRepository.save(item)).thenReturn(itemUpdated);
 
-        ItemDto itemDtoResult  = itemService.update(owner.getId(), item.getId(), itemDto);
+        ItemDto itemDtoResult = itemService.update(owner.getId(), item.getId(), itemDto);
         itemDtoResult.setId(itemDto.getId());
 
         assertEquals(itemDto.getId(), itemDtoResult.getId());
@@ -157,7 +156,7 @@ class ItemServiceImplTest {
         when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
         when(itemRepository.save(item)).thenReturn(itemUpdated);
 
-        ItemDto itemDtoResult  = itemService.update(owner.getId(), item.getId(), itemDto);
+        ItemDto itemDtoResult = itemService.update(owner.getId(), item.getId(), itemDto);
         itemDtoResult.setId(itemDto.getId());
 
         assertEquals(itemDto.getId(), itemDtoResult.getId());
@@ -184,7 +183,7 @@ class ItemServiceImplTest {
 
 
         WrongUserException wrongUserException = assertThrows(WrongUserException.class,
-                    () -> itemService.update(owner.getId(), item.getId(), itemDto));
+                () -> itemService.update(owner.getId(), item.getId(), itemDto));
 
         assertEquals(wrongUserException.getMessage(), "Пользователь с id " + owner.getId() + " не является владельцем данной вещи и не может ее редактировать");
     }
@@ -205,7 +204,7 @@ class ItemServiceImplTest {
         when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
         when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
 
-        ItemDto itemDtoResult  = itemService.getItemById(owner.getId(), item.getId());
+        ItemDto itemDtoResult = itemService.getItemById(owner.getId(), item.getId());
         itemDtoResult.setId(itemDto.getId());
 
         assertEquals(itemDto.getId(), itemDtoResult.getId());
@@ -292,7 +291,6 @@ class ItemServiceImplTest {
     }
 
 
-
     @Test
     void deleteItemById() {
 
@@ -332,7 +330,6 @@ class ItemServiceImplTest {
 
         assertEquals(wrongUserException.getMessage(), "Пользователь с id " + user.getId() + " не является владельцем данной вещи и не может ее редактировать");
     }
-
 
 
     @Test

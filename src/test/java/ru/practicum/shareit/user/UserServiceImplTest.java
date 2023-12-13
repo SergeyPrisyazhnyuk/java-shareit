@@ -53,7 +53,7 @@ class UserServiceImplTest {
     @Test
     void update_whenInvoked_ThenNotFoundException() {
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
-                () -> userService.update(2l, userDto));
+                () -> userService.update(2L, userDto));
 
         assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + 2L);
     }
@@ -82,7 +82,7 @@ class UserServiceImplTest {
     @Test
     void getUserById_whenInvoked_ThenNotFoundException() {
        NotFoundException notFoundException = assertThrows(NotFoundException.class,
-                () -> userService.getUserById(2l));
+                () -> userService.getUserById(2L));
 
         assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + 2L);
     }

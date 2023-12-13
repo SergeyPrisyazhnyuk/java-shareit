@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserMapperTest {
 
 
-    User user = new User(1L, "username", "user@email.ru" );
-    User user2 = new User("username", "user@email.ru" );
+    User user = new User(1L, "username", "user@email.ru");
+    User user2 = new User("username", "user@email.ru");
 
     UserDto userDtoE = new UserDto();
 
