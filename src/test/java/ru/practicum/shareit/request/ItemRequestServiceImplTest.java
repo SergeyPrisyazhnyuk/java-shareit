@@ -105,7 +105,7 @@ class ItemRequestServiceImplTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(itemRequestRepository.findAllByRequestorIdNotOrderByCreated(user.getId(), PageRequest.of(0,1))).thenReturn(List.of(itemRequest));
 
-        List<ItemRequestDtoReturn> list = itemRequestService.getAllRequestsFromToSize(user.getId(), 0 ,1 );
+        List<ItemRequestDtoReturn> list = itemRequestService.getAllRequestsFromToSize(user.getId(), 0,1);
 
         assertNotNull(list);
     }
