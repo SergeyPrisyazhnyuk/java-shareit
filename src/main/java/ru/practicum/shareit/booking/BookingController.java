@@ -59,8 +59,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDtoReturn> getAllByOwner(@RequestHeader(User_ID) Long ownerId,
                                          @RequestParam(name = "state", defaultValue = "ALL") String state,
-                                                @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
-                                                @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size
+                                                @RequestParam(name = "from", defaultValue = "0") /*@Min(0)*/ Integer from,
+                                                @RequestParam(name = "size", defaultValue = "10") /*@Min(1)*/ Integer size
     ) {
         log.info("Invoke getAllByOwner method with userId = {} and state = {} and from = {} and size = {} ", ownerId, state, from, size);
 
