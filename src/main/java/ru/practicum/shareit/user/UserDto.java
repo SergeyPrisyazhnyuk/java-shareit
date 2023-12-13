@@ -26,11 +26,6 @@ public class UserDto {
     @Email
     private String email;
 
-    public UserDto(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
     public UserDto(Long id) {
         this.id = id;
     }

@@ -119,8 +119,10 @@ class ItemControllerTest {
         CommentDtoReturn comment = itemController.addComment(userId, commentDto,itemId);
 
         assertEquals(commentExpected, comment);
+    }
 
-
-
+    @Test
+    void deleteItemById_whenRun_thenOk() {
+            itemController.deleteItemById(1L, 1L);
     }
 }

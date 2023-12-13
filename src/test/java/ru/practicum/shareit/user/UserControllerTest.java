@@ -76,4 +76,10 @@ class UserControllerTest {
         assertEquals(3, user.size());
 
     }
+
+    @Test
+    void deleteUserById_whenInvoked_ThenOk() {
+        userController.deleteUserById(userId);
+    }
+
 }

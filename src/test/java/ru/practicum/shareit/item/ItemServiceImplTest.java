@@ -5,23 +5,34 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.OngoingStubbing;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoInterface;
+import ru.practicum.shareit.booking.dto.BookingDtoReturn;
+import ru.practicum.shareit.exception.CommonValidationException400;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.WrongUserException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoReturn;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -57,12 +68,46 @@ class ItemServiceImplTest {
 
     Booking booking = new Booking(1L, start, end, item, user, BookingStatus.APPROVED);
 
-    Booking bookingW = new Booking(2L, start.plusMinutes(11), end.plusMinutes(15), item, user, BookingStatus.WAITING);
+    Comment comment = new Comment(1L, "texttext", item, user, LocalDateTime.now().minusMinutes(1));
 
-    BookingDto bookingDto = new BookingDto(item.getId(), start, end);
+    CommentDtoReturn commentDtoR = CommentMapper.toCommentDtoReturn(comment);
 
-    BookingDto badBookingDto = new BookingDto(item.getId(), end, start);
+    BookingDtoInterface bookingDtoInterface = new BookingDtoInterface() {
+        @Override
+        public Long getBookingId() {
+            return 1L;
+        }
 
+        @Override
+        public LocalDateTime getBookingStartDate() {
+            return start;
+        }
+
+        @Override
+        public LocalDateTime getBookingEndDate() {
+            return end;
+        }
+
+        @Override
+        public BookingStatus getBookingStatus() {
+            return BookingStatus.APPROVED;
+        }
+
+        @Override
+        public Long getBookingItemId() {
+            return 1L;
+        }
+
+        @Override
+        public String getBookingItemName() {
+            return "item";
+        }
+
+        @Override
+        public Long getBookingBookerId() {
+            return 2L;
+        }
+    };
 
     @Test
     void save_whenInvoked_ThenOk() {
@@ -186,22 +231,188 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getAll() {
+    void getAll_whenInvoked_ThenOk() {
+        List<Long> itemIdList = List.of(item.getId());
+
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findAllByOwnerId(owner.getId())).thenReturn(List.of(item));
+        when(bookingRepository.findAllByItemInAndStatusOrderByStartAsc(anyList(), any(BookingStatus.class))).thenReturn(List.of(bookingDtoInterface));
+
+        when(commentRepository.findAllByItemIdIn(itemIdList)).thenReturn(List.of(comment));
+        Map<Long, List<CommentDtoReturn>> commentsMap = new HashMap<>();
+        commentsMap.put(1L, commentRepository.findAllByItemIdIn(itemIdList).stream().map(CommentMapper::toCommentDtoReturn).collect(Collectors.toList()));
+
+        List<BookingDtoInterface> bookingDtoReturnList = bookingRepository.findAllByItemInAndStatusOrderByStartAsc(anyList(), any(BookingStatus.class));
+        List<BookingDtoReturn> bookingDtoReturns = bookingDtoReturnList.stream().map(BookingMapper::bookingDtoReturnFromInterface).collect(Collectors.toList());
+        Map<Long, List<BookingDtoReturn>> bookingsMap = new HashMap<>();
+        bookingsMap.put(1L, bookingDtoReturns);
+
+        List<ItemBookingDto> itemBookingDtos = itemService.getAll(owner.getId());
+
+        assertFalse(commentsMap.isEmpty());
+        assertFalse(bookingsMap.isEmpty());
+        assertFalse(itemBookingDtos.isEmpty());
+
     }
+
+    @Test
+    void getAll_whenInvoked_NoBookings_ThenOk() {
+        List<Long> itemIdList = List.of(item.getId());
+
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findAllByOwnerId(owner.getId())).thenReturn(List.of(item));
+        when(bookingRepository.findAllByItemInAndStatusOrderByStartAsc(anyList(), any(BookingStatus.class))).thenReturn(List.of(bookingDtoInterface));
+
+        Map<Long, List<BookingDtoReturn>> bookingDtoReturnMap = new HashMap<>();
+
+        List<ItemBookingDto> itemBookingDtos = itemService.getAll(owner.getId());
+
+        List<ItemBookingDto> itemDtos = new ArrayList<>();
+
+        if (bookingDtoReturnMap.isEmpty()) {
+            itemDtos = itemRepository.findAllByOwnerId(owner.getId())
+                    .stream()
+                    .map(ItemMapper::toItemBookingDto)
+                    .collect(toList());
+        }
+
+        assertTrue(bookingDtoReturnMap.isEmpty());
+        assertFalse(itemBookingDtos.isEmpty());
+        assertFalse(itemDtos.isEmpty());
+
+    }
+
+    @Test
+    void getAll_whenInvoked_UserNotFoundException() {
+
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> itemService.getAll(user.getId()));
+
+        assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + user.getId());
+    }
+
+
 
     @Test
     void deleteItemById() {
+
+        ItemServiceImpl myList = mock(ItemServiceImpl.class);
+        doNothing().when(myList).deleteItemById(isA(Long.class), isA(Long.class));
+        myList.deleteItemById(0L, 1L);
+
+        verify(myList, times(1)).deleteItemById(0L, 1L);
+
     }
 
     @Test
-    void search() {
+    void deleteItemById_whenInvoked_UserNotFoundException() {
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> itemService.deleteItemById(user.getId(), item.getId()));
+
+        assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + user.getId());
+
     }
 
     @Test
-    void addComment() {
+    void deleteItemById_whenInvoked_ItemNotFoundException() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> itemService.deleteItemById(owner.getId(), item2.getId()));
     }
 
     @Test
-    void getAllCommentsByItemId() {
+    void deleteItemById_whenInvoked_WrongUserException() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+
+        WrongUserException wrongUserException = assertThrows(WrongUserException.class,
+                () -> itemService.deleteItemById(user.getId(), item.getId()));
+
+        assertEquals(wrongUserException.getMessage(), "Пользователь с id " + user.getId() + " не является владельцем данной вещи и не может ее редактировать");
+    }
+
+
+
+    @Test
+    void search_whenInvoked_ThenOk() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.search(anyString())).thenReturn(List.of(item));
+
+        List<ItemDto> searchResut = itemService.search(owner.getId(), "blablabla");
+        System.out.println(searchResut);
+
+        assertFalse(searchResut.isEmpty());
+    }
+
+    @Test
+    void search_whenInvoked_BlankText_ThenOk() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+
+        List<ItemDto> searchResut = itemService.search(owner.getId(), "");
+
+        assertFalse(!searchResut.isEmpty());
+    }
+
+    @Test
+    void search_whenInvoked_UserNotFoundException() {
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> itemService.search(user.getId(), "sometext"));
+
+        assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + user.getId());
+
+    }
+
+
+    @Test
+    void addComment_whenInvoked_ThenOk() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByUserAndItem(anyLong(), anyLong(), any(LocalDateTime.class))).thenReturn(List.of(bookingDtoInterface));
+
+        CommentDto commentDto = new CommentDto("blablabla");
+        comment.setText(commentDto.getText());
+        when(commentRepository.save(CommentMapper.toComment(commentDto, item, user))).thenReturn(comment);
+
+        CommentDtoReturn commentDtoReturn = itemService.addComment(user.getId(), commentDto, item.getId());
+
+        assertNotNull(commentDtoReturn);
+        assertEquals("blablabla", commentDtoReturn.getText());
+    }
+
+    @Test
+    void addComment_whenInvoked_UserNotFoundException() {
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> itemService.addComment(user.getId(), new CommentDto(), item.getId()));
+
+        assertEquals(notFoundException.getMessage(), "Не найден юзер с id: " + user.getId());
+    }
+
+    @Test
+    void addComment_whenInvoked_ItemNotFoundException() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> itemService.addComment(owner.getId(), new CommentDto(), item2.getId()));
+    }
+
+    @Test
+    void addComment_whenInvoked_CommonValidationException400() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+
+        assertThrows(CommonValidationException400.class,
+                () -> itemService.addComment(user.getId(), new CommentDto(), item.getId()));
+    }
+
+    @Test
+    void deleteItemById_ThenOk() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+
+        itemService.deleteItemById(owner.getId(), item.getId());
+
     }
 }
