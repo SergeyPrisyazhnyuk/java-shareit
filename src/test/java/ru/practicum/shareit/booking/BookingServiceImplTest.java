@@ -405,7 +405,8 @@ class BookingServiceImplTest {
     void getAllByOwner_findAllBookingsByOwnerId() {
 
         List<BookingDtoReturn> bookingDtoReturn = List.of(BookingMapper.bookingDtoReturn(booking));
-        Page<BookingDtoInterface> page = PageableExecutionUtils.getPage(List.of(bookingDtoInterface), PageRequest.of(0, 1), () -> List.of(bookingDtoInterface).size());
+//        Page<BookingDtoInterface> page = PageableExecutionUtils.getPage(List.of(bookingDtoInterface), PageRequest.of(0, 1), () -> List.of(bookingDtoInterface).size());
+        List<BookingDtoInterface> page = List.of(bookingDtoInterface);
 
         when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
         when(bookingRepository.findAllBookingsByOwnerId(anyLong(), any(Pageable.class))).thenReturn(page);
