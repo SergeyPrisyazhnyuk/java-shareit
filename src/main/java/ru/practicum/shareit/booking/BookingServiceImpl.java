@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -157,15 +156,10 @@ public class BookingServiceImpl implements BookingService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-
-        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
-            pageable = PageRequest.of(0, 1);
-        }
-
         switch (state) {
             case "ALL":
-
-                return bookingRepository.findAllBookingsByOwnerId(ownerId, pageable).stream()
+                Pageable pageableA = from == 1 && size == 1 ? PageRequest.of(0, size) : pageable;
+                return bookingRepository.findAllBookingsByOwnerId(ownerId, pageableA).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
