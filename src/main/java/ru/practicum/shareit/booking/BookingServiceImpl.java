@@ -106,7 +106,8 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from <= 0 ? from : (from + size - 1) / size, size)).stream()
+//                return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from <= 0 ? from : (from + size - 1) / size, size)).stream()
+                return bookingRepository.findAllBookingsByBookerId(bookerId, PageRequest.of(from, size)).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 
