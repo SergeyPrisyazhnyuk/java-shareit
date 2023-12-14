@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
+    @Query(value = "select /*b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId*/ b.* from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = ?1 " +
             " order by b.start_date desc ", nativeQuery = true)
     Page<BookingDtoInterface> findAllBookingsByBookerId(Long bookerId, Pageable pageable);
