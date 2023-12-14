@@ -51,7 +51,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.item_id as bookingItemId, b.booker_id as bookingBookerId, b.status as bookingStatus, i.name as bookingItemName from public.bookings as b join public.items as i on i.id = b.item_id " +
             " where i.owner_id = ?1 " +
-            " order by b.start_date desc ", nativeQuery = true)
+            " order by b.start_date asc ", nativeQuery = true)
     Page<BookingDtoInterface> findAllBookingsByOwnerId(Long ownerId, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, b.status as bookingStatus, i.id as bookingItemId, i.name as bookingItemName, b.booker_id as bookingBookerId from bookings b join items i on i.id = b.item_id " +
