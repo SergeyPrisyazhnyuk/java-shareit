@@ -106,11 +106,9 @@ public class BookingServiceImpl implements BookingService {
 
         bookingStateValidation(state);
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
-        if (Objects.equals(state, "ALL") && from == 4 && size == 2) {
-            pageable = PageRequest.of(from / size, size);
-        } else if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
+        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
             pageable = PageRequest.of(0, 1);
         }
 
