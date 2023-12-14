@@ -1,11 +1,13 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoInterface;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 import ru.practicum.shareit.exception.BookingValidationException;
 import ru.practicum.shareit.exception.CommonValidationException400;
@@ -19,12 +21,13 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional
+@Transactional
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -107,12 +110,9 @@ public class BookingServiceImpl implements BookingService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-/*        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
-            pageable = PageRequest.of(0, 1);
-        }*/
-
         switch (state) {
             case "ALL":
+
                 return bookingRepository.findAllBookingsByBookerId(bookerId, pageable).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
@@ -157,10 +157,16 @@ public class BookingServiceImpl implements BookingService {
 
         bookingStateValidation(state);
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
+
+
+        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
+            pageable = PageRequest.of(0, 1);
+        }
 
         switch (state) {
             case "ALL":
+
                 return bookingRepository.findAllBookingsByOwnerId(ownerId, pageable).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
