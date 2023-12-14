@@ -108,9 +108,9 @@ public class BookingServiceImpl implements BookingService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
+/*        if (Objects.equals(state, "ALL") && from == 1 && size == 1) {
             pageable = PageRequest.of(0, 1);
-        }
+        }*/
 
         switch (state) {
             case "ALL":
