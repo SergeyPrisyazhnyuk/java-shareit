@@ -158,14 +158,6 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-//                Pageable pageableA = from == 1 && size == 1 ? PageRequest.of(0, size) : pageable;
-/*
-                if (from == 1 && size == 1) {
-                    save(4L, new BookingDto(1L, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(12)));
-                    save(5L, new BookingDto(1L, LocalDateTime.now().plusDays(20), LocalDateTime.now().plusDays(30)));
-                }
-*/
-
                 return bookingRepository.findAllBookingsByOwnerId(ownerId, pageable).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());

@@ -26,7 +26,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional
     public ItemRequestDtoReturn save(Long userId, ItemRequestDto itemRequestDto) {
-
         User user = userRequestValidation(userId);
 
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto);
@@ -39,7 +38,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemRequestDtoReturn> getRequestByUserId(Long userId) {
-
         userRequestValidation(userId);
 
         List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequestorId(userId);
@@ -51,7 +49,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDtoReturn> getAllRequestsFromToSize(Long userId, Integer from, Integer size) {
         User user = userRequestValidation(userId);
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequestorIdNotOrderByCreated(userId, pageable);
 
@@ -61,7 +59,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDtoReturn getRequestById(Long userId, Long requestId) {
-
         userRequestValidation(userId);
 
         Optional<ItemRequest> requestById = itemRequestRepository.findById(requestId);
@@ -75,7 +72,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private User userRequestValidation(Long userId) {
-
         Optional<User> userO = userRepository.findById(userId);
 
         if (userO == null || userO.isEmpty()) {
