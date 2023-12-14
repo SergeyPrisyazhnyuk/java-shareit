@@ -158,8 +158,8 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-                Pageable pageableA = from == 1 && size == 1 ? PageRequest.of(0, size) : pageable;
-                return bookingRepository.findAllBookingsByOwnerId(ownerId, pageableA).stream()
+//                Pageable pageableA = from == 1 && size == 1 ? PageRequest.of(0, size) : pageable;
+                return bookingRepository.findAllBookingsByOwnerId(ownerId, pageable).stream()
                         .map(BookingMapper::bookingDtoReturnFromInterface)
                         .collect(Collectors.toList());
 

@@ -26,7 +26,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDtoReturn save(@RequestHeader(User_ID) Long userId, @Valid @RequestBody BookingDto bookingDto) {
-        log.info("Invoke save method with user = {} and booking = {}", userId, bookingDto);
+        log.info("Invoke booking save method with user = {} and booking = {}", userId, bookingDto);
         return bookingService.save(userId, bookingDto);
     }
 
