@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     @PostMapping
     public UserDto save(@Valid @RequestBody UserDto userDto) {

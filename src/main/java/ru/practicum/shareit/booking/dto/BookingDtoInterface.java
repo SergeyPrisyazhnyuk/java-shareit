@@ -16,8 +16,7 @@ public interface BookingDtoInterface {
 
     Long getBookingItemId();
 
-    String getBookingItemName();
-
     Long getBookingBookerId();
 
+    String getBookingItemName();
 }
