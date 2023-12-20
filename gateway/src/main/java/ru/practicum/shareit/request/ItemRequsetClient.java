@@ -33,7 +33,7 @@ public class ItemRequsetClient extends BaseClient {
 
 
     public ResponseEntity<Object> getRequestByUserId(long userId) {
-        return get("" + userId);
+        return get("", userId);
     }
 
     public ResponseEntity<Object> getAllRequestsFromToSize(long userId, int from, int size) {
