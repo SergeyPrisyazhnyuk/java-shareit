@@ -51,10 +51,14 @@ public class BookingController {
 
 	@GetMapping("/owner")
 	public ResponseEntity<Object> getAllByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-												@RequestParam(name = "state", defaultValue = "ALL") String state,
+												@RequestParam(name = "state", defaultValue = "ALL") String stateParam,
 												@RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
 												@RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size
 	) {
+
+		BookingState state = BookingState.from(stateParam)
+				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+
 		log.info("Invoke getAllByOwner method with userId = {} and state = {} and from = {} and size = {} ", ownerId, state, from, size);
 
 		return bookingClient.getAllByOwner(ownerId, state, from, size);
