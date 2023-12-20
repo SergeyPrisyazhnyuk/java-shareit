@@ -8,8 +8,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 
-import java.util.Map;
-
 public class UserClient extends BaseClient {
 
     private static final String API_PREFIX = "/users";
