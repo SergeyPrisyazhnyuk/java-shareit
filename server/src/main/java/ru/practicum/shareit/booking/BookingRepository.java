@@ -26,7 +26,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = :bookerId " +
             " and :localDateTime between b.start_date and b.end_date " +
-            " order by b.start_date asc ", nativeQuery = true)
+            " order by b.start_date desc ", nativeQuery = true)
     Page<BookingDtoInterface> findCurrentBookingsByBookerId(Long bookerId, LocalDateTime localDateTime, Pageable pageable);
 
     @Query(value = "select b.id as bookingId, b.start_date as bookingStartDate, b.end_date as bookingEndDate, " +
