@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import ru.practicum.shareit.booking.dto.BookingDtoReturn;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,9 +33,9 @@ public class ItemDto {
 
     private Long requestId;
 
-    private BookingDtoReturn lastBooking;
+    private BookItemRequestDto lastBooking;
 
-    private BookingDtoReturn nextBooking;
+    private BookItemRequestDto nextBooking;
 
     private List<CommentDtoReturn> comments;
 
