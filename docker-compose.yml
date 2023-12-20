@@ -19,13 +19,15 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:6541/shareit
+      - SPRING_DATASOURCE_PORT=6541
+      - SPRING_DATASOURCE_HOST=db
 
   db:
     image: postgres:13.7-alpine
     container_name: db
     ports:
-      - "5432:5432"
+      - "6541:5432"
     volumes:
       - var/lib/postgresql/data
     environment:
