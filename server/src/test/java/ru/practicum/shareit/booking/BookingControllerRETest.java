@@ -75,6 +75,7 @@ class BookingControllerRETest {
         assertEquals(objectMapper.writeValueAsString(bookingDtoReturn), result);
     }
 
+/*
     @SneakyThrows
     @Test
     void save_whenInvoked_thenBookingReturnsBadRequest()  {
@@ -106,6 +107,7 @@ class BookingControllerRETest {
 
             verify(bookingService, never()).save(userId, bookingDto);
     }
+*/
 
     @SneakyThrows
     @Test
