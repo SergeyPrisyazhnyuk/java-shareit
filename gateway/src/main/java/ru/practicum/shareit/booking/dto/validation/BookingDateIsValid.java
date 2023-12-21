@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
 
-public class BookingDateIsValid implements ConstraintValidator<StartEndTimeValid , BookItemRequestDto> {
+public class BookingDateIsValid implements ConstraintValidator<StartEndTimeValid, BookItemRequestDto> {
 
 
     @Override
