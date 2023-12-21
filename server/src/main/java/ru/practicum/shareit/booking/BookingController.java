@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -25,7 +23,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDtoReturn save(@RequestHeader(User_ID) Long userId, @Valid @RequestBody BookingDto bookingDto) {
+    public BookingDtoReturn save(@RequestHeader(User_ID) Long userId, @RequestBody BookingDto bookingDto) {
         log.info("Invoke booking save method with user = {} and booking = {}", userId, bookingDto);
         return bookingService.save(userId, bookingDto);
     }
@@ -51,8 +49,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoReturn> getAll(@RequestHeader(User_ID) Long bookerId,
                                          @RequestParam(name = "state", defaultValue = "ALL") String state,
-                                         @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
-                                         @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size
+                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                         @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
         log.info("Invoke getAll method with userId = {} and state = {} and from = {} and size = {} ", bookerId, state, from, size);
         return bookingService.getAll(bookerId, state, from, size);
@@ -61,8 +59,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDtoReturn> getAllByOwner(@RequestHeader(User_ID) Long ownerId,
                                          @RequestParam(name = "state", defaultValue = "ALL") String state,
-                                                @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
-                                                @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size
+                                                @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
         log.info("Invoke getAllByOwner method with userId = {} and state = {} and from = {} and size = {} ", ownerId, state, from, size);
 

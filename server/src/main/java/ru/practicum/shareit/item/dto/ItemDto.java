@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.dto.BookingDtoReturn;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -20,13 +18,13 @@ import java.util.List;
 public class ItemDto {
     private Long id;
 
-    @NotBlank
+
     private String name;
 
-    @NotBlank
+
     private String description;
 
-    @NotNull
+
     private Boolean available;
 
     private Long owner;

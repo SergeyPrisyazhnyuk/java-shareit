@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto save(@Valid @RequestBody UserDto userDto) {
+    public UserDto save(@RequestBody UserDto userDto) {
         log.info("Invoke save method with user = {}", userDto);
         return userService.save(userDto);
     }

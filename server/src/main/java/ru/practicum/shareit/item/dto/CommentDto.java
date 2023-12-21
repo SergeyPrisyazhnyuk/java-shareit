@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CommentDto {
 
-    @NotBlank
+
     private String text;
 
 }

@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.dto.CommentDtoReturn;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -25,7 +24,7 @@ public class ItemController {
 
 
     @PostMapping
-    public ItemDto save(@RequestHeader(User_ID) Long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto save(@RequestHeader(User_ID) Long userId, @RequestBody ItemDto itemDto) {
         log.info("Invoke save method with user = {} and item = {}", userId, itemDto);
         return itemService.save(userId, itemDto);
     }
@@ -64,7 +63,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDtoReturn addComment(@RequestHeader(User_ID) Long userId,
-                                       @Valid @RequestBody CommentDto commentDto,
+                                       @RequestBody CommentDto commentDto,
                                        @PathVariable Long itemId) {
         log.info("Invoke saveComment method with user = {}, comment = {} and text = {}", userId, commentDto, itemId);
         return itemService.addComment(userId, commentDto, itemId);
