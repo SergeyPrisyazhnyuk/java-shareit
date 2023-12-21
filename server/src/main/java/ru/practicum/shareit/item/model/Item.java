@@ -32,10 +32,10 @@ public class Item {
     @Column(name = "available", nullable = false)
     private Boolean available;
 
-    @Column(name = "owner_id", nullable = false)
+    @Column(name = "owner_id")
     private Long owner;
 
-   @Column(name = "request_id", nullable = false)
+   @Column(name = "request_id")
    private Long request;
 
     public Item(String name, String description, Boolean available, Long owner, Long request) {

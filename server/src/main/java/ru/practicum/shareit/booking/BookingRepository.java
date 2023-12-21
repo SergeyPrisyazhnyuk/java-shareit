@@ -136,7 +136,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " from bookings b join items i on i.id = b.item_id " +
             " where b.booker_id = :userId and b.item_id = :itemId and b.end_date < :localDateTime " +
             " and b.status = 'APPROVED' order by b.id desc", nativeQuery = true)
-    @Transactional
     List<BookingDtoInterface> findAllByUserAndItem(Long userId, Long itemId, LocalDateTime localDateTime);
 
 

@@ -48,13 +48,13 @@ public class ItemController {
         return itemClient.getAll(userId);
     }
 
-/*
+
     @DeleteMapping("/{itemId}")
-    public void deleteItemById(@RequestHeader(User_ID) Long userId, @PathVariable Long itemId) {
+    public ResponseEntity<Object> deleteItemById(@RequestHeader(User_ID) Long userId, @PathVariable Long itemId) {
         log.info("Invoke deleteItemById method with user = {} and itemId = {}", userId, itemId);
-        itemClient.deleteItemById(userId, itemId);
+        return itemClient.deleteItemById(userId, itemId);
     }
-*/
+
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestHeader(User_ID) Long userId, @RequestParam(name = "text") String text) {
@@ -66,7 +66,7 @@ public class ItemController {
     public ResponseEntity<Object> addComment(@RequestHeader(User_ID) Long userId,
                                        @Valid @RequestBody CommentDto commentDto,
                                        @PathVariable Long itemId) {
-        log.info("Invoke saveComment method with user = {}, comment = {} and text = {}", userId, commentDto, itemId);
+        log.info("Invoke saveComment method with user = {}, comment = {} and item = {}", userId, commentDto, itemId);
         return itemClient.addComment(userId, commentDto, itemId);
 
     }
